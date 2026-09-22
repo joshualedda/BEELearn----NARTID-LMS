@@ -1,145 +1,87 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  BookOpen,
-  Play,
-  FileText,
-  TrendingUp,
-} from "lucide-react";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
+import { BookOpen, Play, FileText, TrendingUp } from "lucide-react";
 
 const features = [
   {
     icon: BookOpen,
     title: "Structured Courses",
-    description:
-      "Learn through organized lessons from beginner to advanced topics. Our curriculum is designed by beekeeping experts and agricultural educators.",
-    color: "bg-[#0D2B52]",
-    iconColor: "text-[#0D2B52]",
-    bgColor: "bg-[#0D2B52]/10",
+    description: "Organized lessons from beginner to advanced. Curriculum designed by beekeeping experts and agricultural educators.",
+    bg: "bg-[#0D2B52]/10",
+    iconClass: "text-[#0D2B52]",
   },
   {
     icon: Play,
     title: "Video Lessons",
-    description:
-      "Watch practical demonstrations and educational content. High-quality videos show real beekeeping techniques, hive inspections, and honey harvesting.",
-    color: "bg-[#E5A900]",
-    iconColor: "text-[#E5A900]",
-    bgColor: "bg-[#E5A900]/10",
+    description: "Practical demonstrations and high-quality videos — hive inspections, honey harvesting, and field techniques.",
+    bg: "bg-[#E5A900]/10",
+    iconClass: "text-[#E5A900]",
   },
   {
     icon: FileText,
     title: "Learning Resources",
-    description:
-      "Access guides, materials, and reference resources. Downloadable PDFs, checklists, seasonal calendars, and troubleshooting guides for every situation.",
-    color: "bg-green-600",
-    iconColor: "text-green-600",
-    bgColor: "bg-green-600/10",
+    description: "Downloadable guides, checklists, seasonal calendars and troubleshooting resources for every situation.",
+    bg: "bg-green-600/10",
+    iconClass: "text-green-600",
   },
   {
     icon: TrendingUp,
     title: "Track Your Progress",
-    description:
-      "Monitor completed lessons and your learning journey. Personal dashboard with progress tracking, achievement badges, and personalized recommendations.",
-    color: "bg-blue-600",
-    iconColor: "text-blue-600",
-    bgColor: "bg-blue-600/10",
+    description: "Personal dashboard with progress tracking, badges, and personalized next steps for your journey.",
+    bg: "bg-blue-600/10",
+    iconClass: "text-blue-600",
   },
 ];
 
 export function FeaturesSection() {
-  const sectionRef = useRef<HTMLSectionElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      ref={sectionRef}
-      id="features"
-      className="py-20 sm:py-28 lg:py-32 bg-white"
-      aria-labelledby="features-heading"
-    >
+    <section id="features" className="bg-white py-16 sm:py-20 lg:py-24" aria-labelledby="features-heading">
       <div className="mx-auto max-w-7xl px-6">
-        <div
-          className="text-center max-w-3xl mx-auto mb-16"
-          style={{
-            opacity: isVisible ? 1 : 0,
-            transform: isVisible ? "translateY(0)" : "translateY(30px)",
-            transition: "opacity 0.8s ease-out, transform 0.8s ease-out",
-          }}
-        >
-          <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700 mb-4">
+        <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 font-sans text-xs font-semibold text-green-700">
             <span className="h-1.5 w-1.5 rounded-full bg-green-500" aria-hidden="true" />
             Platform Features
           </span>
-          <h2
-            id="features-heading"
-            className="text-3xl sm:text-4xl font-bold text-[#0D2B52] mb-4"
-          >
+          <h2 id="features-heading" className="mt-4 font-sans text-2xl font-bold tracking-tight text-[#0D2B52] sm:text-3xl lg:text-4xl">
             Everything you need to learn beekeeping
           </h2>
-          <p className="text-lg text-[#6B82A6]">
-            A comprehensive learning platform designed to take you from curious
-            beginner to confident beekeeper.
+          <p className="mt-3 font-sans text-[15px] leading-6 text-[#6B82A6] sm:text-base">
+            A comprehensive platform designed to take you from curious beginner to confident beekeeper.
           </p>
-        </div>
+        </FadeIn>
 
-        <div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-          role="list"
-          aria-label="Platform features"
-        >
-          {features.map((feature, index) => {
+        <StaggerContainer className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature) => {
             const Icon = feature.icon;
             return (
-              <article
-                key={feature.title}
-                className="group"
-                style={{
-                  opacity: isVisible ? 1 : 0,
-                  transform: isVisible ? "translateY(0)" : "translateY(30px)",
-                  transition: `opacity 0.6s ease-out ${index * 0.1}s, transform 0.6s ease-out ${index * 0.1}s`,
-                }}
-                role="listitem"
-              >
-                <Card className="h-full border-gray-100 hover:border-[#E5A900]/50 hover:shadow-xl transition-all duration-300">
-                  <CardContent className="p-6 pt-8">
-                    <div
-                      className={`inline-flex h-14 w-14 items-center justify-center rounded-xl mb-5 ${feature.bgColor} group-hover:${feature.color} group-hover:text-white transition-all duration-300`}
-                      aria-hidden="true"
-                    >
-                      <Icon className={`h-7 w-7 ${feature.iconColor} group-hover:text-white transition-colors duration-300`} />
-                    </div>
-                    <h3 className="text-xl font-bold text-[#0D2B52] mb-3 group-hover:text-[#E5A900] transition-colors duration-300">
-                      {feature.title}
-                    </h3>
-                    <p className="text-[#6B82A6] leading-relaxed">
-                      {feature.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </article>
+              <StaggerItem key={feature.title}>
+                <motion.div
+                  whileHover={{ y: -4, scale: 1.01 }}
+                  transition={{ type: "spring", stiffness: 320, damping: 18 }}
+                  className="h-full"
+                >
+                  <Card className="h-full border-gray-100 transition-all duration-300 hover:border-[#E5A900]/30 hover:shadow-[0_12px_32px_-16px_rgba(13,43,82,0.15)]">
+                    <CardContent className="p-6">
+                      <motion.div
+                        whileHover={{ scale: 1.08, rotate: 2 }}
+                        transition={{ type: "spring", stiffness: 400 }}
+                        className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${feature.bg}`}
+                        aria-hidden="true"
+                      >
+                        <Icon className={`h-6 w-6 ${feature.iconClass}`} />
+                      </motion.div>
+                      <h3 className="mt-4 font-sans text-[15px] font-bold text-[#0D2B52]">{feature.title}</h3>
+                      <p className="mt-2 font-sans text-sm leading-6 text-[#6B82A6]">{feature.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );

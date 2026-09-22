@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
               autoComplete="email"
               required
             />
-            <Button type="submit">Send Reset Link</Button>
+            <Button type="submit" className="w-full">Send Reset Link</Button>
           </form>
           <p className="mt-6 text-center text-sm text-slate-500">
             Remembered it?{" "}

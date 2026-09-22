@@ -2,17 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import {
-  Menu,
-  X,
-  Bee,
-  BookOpen,
-  Info,
-  FileText,
-  LogIn,
-  UserPlus,
-} from "lucide-react";
+import { BeeIcon } from "@/components/icons/BeeIcon";
+import { Menu, X, LogIn, UserPlus } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/#features", label: "Features" },
@@ -47,11 +40,14 @@ export function Navbar() {
   const closeMenu = () => setIsOpen(false);
 
   return (
-    <header
+    <motion.header
+      initial={{ y: -16, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm"
-          : "bg-transparent"
+          : "bg-white/70 backdrop-blur-sm border-b border-transparent"
       }`}
       role="banner"
     >
@@ -62,15 +58,15 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-2.5 text-xl font-bold text-[#0D2B52] focus:outline-none focus:ring-2 focus:ring-[#E5A900] focus:ring-offset-2 rounded-md"
+            className="flex items-center gap-2.5 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-[#E5A900] focus:ring-offset-2 rounded-md"
             aria-label="BeeLearn Home"
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0D2B52] text-white">
-              <Bee className="h-5 w-5 text-green-400" aria-hidden="true" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0D2B52] text-[#E5A900]">
+              <BeeIcon className="h-5 w-5" aria-hidden="true" />
             </span>
             <span>
-              <span className="text-white">Bee</span>
-              <span className="text-green-400">Learn</span>
+              <span className="text-[#0D2B52]">Bee</span>
+              <span className="text-[#E5A900]">Learn</span>
             </span>
           </Link>
 
@@ -116,46 +112,58 @@ export function Navbar() {
           </button>
         </div>
 
-        <div
-          id="mobile-menu"
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isOpen ? "max-h-96 opacity-100 pb-6" : "max-h-0 opacity-0"
-          }`}
-          role="navigation"
-          aria-label="Mobile menu"
-        >
-          <div className="pt-4 space-y-2 border-t border-gray-100">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block px-3 py-2.5 text-base font-medium text-[#0D2B52] rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#E5A900]"
-                onClick={closeMenu}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="pt-4 border-t border-gray-100 space-y-3">
-              <Link
-                href="/login"
-                className="block w-full text-left px-3 py-2.5 text-base font-medium text-[#0D2B52] rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#E5A900]"
-                onClick={closeMenu}
-              >
-                <LogIn className="h-5 w-5 inline mr-2" aria-hidden="true" />
-                Sign In
-              </Link>
-              <Link
-                href="/register"
-                className="block w-full text-left px-3 py-2.5 text-base font-medium text-white bg-[#0B2343] rounded-lg hover:bg-[#123158] focus:outline-none focus:ring-2 focus:ring-[#E5A900] focus:ring-offset-2"
-                onClick={closeMenu}
-              >
-                <UserPlus className="h-5 w-5 inline mr-2" aria-hidden="true" />
-                Get Started
-              </Link>
-            </div>
-          </div>
-        </div>
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              id="mobile-menu"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              className="md:hidden overflow-hidden"
+              role="navigation"
+              aria-label="Mobile menu"
+            >
+              <div className="pt-4 space-y-2 border-t border-gray-100 pb-6">
+                {NAV_LINKS.map((link, i) => (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                  >
+                    <Link
+                      href={link.href}
+                      className="block px-3 py-2.5 text-base font-medium text-[#0D2B52] rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#E5A900]"
+                      onClick={closeMenu}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ))}
+                <div className="pt-4 border-t border-gray-100 space-y-3">
+                  <Link
+                    href="/login"
+                    className="block w-full text-left px-3 py-2.5 text-base font-medium text-[#0D2B52] rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#E5A900]"
+                    onClick={closeMenu}
+                  >
+                    <LogIn className="h-5 w-5 inline mr-2" aria-hidden="true" />
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="block w-full text-left px-3 py-2.5 text-base font-medium text-white bg-[#0B2343] rounded-lg hover:bg-[#123158] focus:outline-none focus:ring-2 focus:ring-[#E5A900] focus:ring-offset-2"
+                    onClick={closeMenu}
+                  >
+                    <UserPlus className="h-5 w-5 inline mr-2" aria-hidden="true" />
+                    Get Started
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
-    </header>
+    </motion.header>
   );
 }

@@ -5,13 +5,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { BeeIcon } from "@/components/icons/BeeIcon";
 import {
-  Bee,
-  Facebook,
-  Twitter,
-  Instagram,
-  Youtube,
-  Mail,
+  Globe,
+  Bird,
+  Camera,
+  Video,
   ArrowRight,
   Check,
 } from "lucide-react";
@@ -83,12 +82,12 @@ export function Footer() {
               className="flex items-center gap-2.5 text-xl font-bold mb-6"
               aria-label="BeeLearn Home"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10">
-                <Bee className="h-6 w-6 text-green-400" aria-hidden="true" />
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-[#E5A900]">
+                <BeeIcon className="h-6 w-6" aria-hidden="true" />
               </span>
               <span>
                 <span className="text-white">Bee</span>
-                <span className="text-green-400">Learn</span>
+                <span className="text-[#E5A900]">Learn</span>
               </span>
             </Link>
 
@@ -105,7 +104,7 @@ export function Footer() {
                 className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-[#8FA3BF] hover:bg-white/20 hover:text-white transition-colors"
                 aria-label="Facebook"
               >
-                <Facebook className="h-5 w-5" />
+                <Globe className="h-5 w-5" />
               </a>
               <a
                 href="https://twitter.com"
@@ -114,7 +113,7 @@ export function Footer() {
                 className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-[#8FA3BF] hover:bg-white/20 hover:text-white transition-colors"
                 aria-label="Twitter"
               >
-                <Twitter className="h-5 w-5" />
+                <Bird className="h-5 w-5" />
               </a>
               <a
                 href="https://instagram.com"
@@ -123,7 +122,7 @@ export function Footer() {
                 className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-[#8FA3BF] hover:bg-white/20 hover:text-white transition-colors"
                 aria-label="Instagram"
               >
-                <Instagram className="h-5 w-5" />
+                <Camera className="h-5 w-5" />
               </a>
               <a
                 href="https://youtube.com"
@@ -132,7 +131,7 @@ export function Footer() {
                 className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-[#8FA3BF] hover:bg-white/20 hover:text-white transition-colors"
                 aria-label="YouTube"
               >
-                <Youtube className="h-5 w-5" />
+                <Video className="h-5 w-5" />
               </a>
             </div>
           </div>

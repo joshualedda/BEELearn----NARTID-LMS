@@ -1,99 +1,54 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import { BookOpen, FileText, Users, Clock } from "lucide-react";
 
 const stats = [
-  {
-    value: "10+",
-    label: "Courses",
-    icon: BookOpen,
-    description: "Expert-led beekeeping courses",
-  },
-  {
-    value: "100+",
-    label: "Lessons",
-    icon: FileText,
-    description: "Video lessons & resources",
-  },
-  {
-    value: "500+",
-    label: "Learners",
-    icon: Users,
-    description: "Active students worldwide",
-  },
-  {
-    value: "24/7",
-    label: "Access",
-    icon: Clock,
-    description: "Learn anytime, anywhere",
-  },
+  { value: "10+", label: "Courses", icon: BookOpen, description: "Expert-led courses" },
+  { value: "100+", label: "Lessons", icon: FileText, description: "Video & resources" },
+  { value: "500+", label: "Learners", icon: Users, description: "Active students" },
+  { value: "24/7", label: "Access", icon: Clock, description: "Anytime, anywhere" },
 ];
 
 export function StatisticsSection() {
-  const sectionRef = useRef<HTMLSectionElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const [animatedValues, setAnimatedValues] = useState<Record<string, number>>({});
+  const [counts, setCounts] = useState<Record<string, number>>({});
+  const [hasAnimated, setHasAnimated] = useState(false);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2, rootMargin: "0px 0px -50px 0px" }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const animateCount = (target: number, duration: number = 2000) => {
-      const startTime = performance.now();
-      const animate = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        return Math.floor(target * eased);
-      };
-
-      const animateLoop = (timestamp: number) => {
-        const value = animate(timestamp);
-        setAnimatedValues((prev) => ({ ...prev, [target.toString()]: value }));
-        if (progress < 1) {
-          requestAnimationFrame(animateLoop);
-        }
-      };
-
-      requestAnimationFrame(animateLoop);
-    };
-
+  // re-trigger: animate each time section comes into view via motion onViewportEnter
+  const handleViewportEnter = () => {
+    setHasAnimated(true);
+    setCounts({});
     stats.forEach((stat) => {
-      const numericValue = parseInt(stat.value.replace(/\D/g, ""));
       if (stat.value.includes("+")) {
-        animateCount(numericValue);
+        const target = parseInt(stat.value.replace(/\D/g, ""), 10);
+        const duration = 1100;
+        const start = performance.now();
+        const tick = (now: number) => {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.floor(target * eased);
+          setCounts((prev) => ({ ...prev, [stat.label]: current }));
+          if (progress < 1) requestAnimationFrame(tick);
+          else setCounts((prev) => ({ ...prev, [stat.label]: target }));
+        };
+        requestAnimationFrame(tick);
       }
     });
-  }, [isVisible]);
+  };
 
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       id="statistics"
-      className="relative py-20 sm:py-28 lg:py-32 overflow-hidden"
+      className="relative overflow-hidden bg-[#0D2B52] py-16 sm:py-20 lg:py-24"
       aria-labelledby="statistics-heading"
+      onViewportEnter={handleViewportEnter}
+      viewport={{ once: false, amount: 0.3 }}
     >
-      <div className="absolute inset-0 bg-[#0D2B52]" aria-hidden="true" />
       <div
-        className="absolute inset-0 opacity-5"
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
         aria-hidden="true"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L50 10.4 L50 30.6 L30 41 L10 30.6 L10 10.4 Z' fill='none' stroke='%23E5A900' stroke-width='0.5'/%3E%3C/svg%3E")`,
@@ -102,80 +57,47 @@ export function StatisticsSection() {
       />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <div
-          className="text-center max-w-3xl mx-auto mb-16"
-          style={{
-            opacity: isVisible ? 1 : 0,
-            transform: isVisible ? "translateY(0)" : "translateY(30px)",
-            transition: "opacity 0.8s ease-out, transform 0.8s ease-out",
-          }}
-        >
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#E5A900]/20 px-3 py-1 text-xs font-medium text-[#E5A900] mb-4">
+        <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 font-sans text-xs font-semibold text-[#E5A900]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#E5A900]" aria-hidden="true" />
             Platform Statistics
           </span>
-          <h2
-            id="statistics-heading"
-            className="text-3xl sm:text-4xl font-bold text-white mb-4"
-          >
+          <h2 id="statistics-heading" className="mt-4 font-sans text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
             Growing community of beekeepers
           </h2>
-          <p className="text-lg text-[#8FA3BF]">
-            Join thousands of learners mastering the art and science of beekeeping.
-          </p>
-        </div>
+          <p className="mt-3 font-sans text-sm leading-6 text-[#8FA3BF] sm:text-[15px]">Join thousands of learners mastering the art and science of beekeeping.</p>
+        </FadeIn>
 
-        <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-8"
-          role="list"
-          aria-label="Platform statistics"
-        >
-          {stats.map((stat, index) => {
+        <StaggerContainer className="grid grid-cols-2 gap-6 lg:grid-cols-4 lg:gap-8">
+          {stats.map((stat) => {
             const Icon = stat.icon;
-            const numericValue = parseInt(stat.value.replace(/\D/g, ""));
-            const animatedValue = animatedValues[numericValue.toString()];
-            const displayValue = isVisible && animatedValue !== undefined
-              ? `${animatedValue}${stat.value.includes("+") ? "+" : ""}${stat.value.includes("/") ? "/7" : ""}`
-              : isVisible && !stat.value.includes("/")
-                ? `${numericValue}+`
-                : stat.value;
-
+            const animated = counts[stat.label];
+            const isPlus = stat.value.includes("+");
+            const display = hasAnimated && animated !== undefined && isPlus ? `${animated}+` : stat.value;
             return (
-              <article
-                key={stat.label}
-                className="text-center"
-                style={{
-                  opacity: isVisible ? 1 : 0,
-                  transform: isVisible ? "translateY(0)" : "translateY(30px)",
-                  transition: `opacity 0.6s ease-out ${index * 0.1}s, transform 0.6s ease-out ${index * 0.1}s`,
-                }}
-                role="listitem"
-              >
-                <div
-                  className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 mb-5"
-                  aria-hidden="true"
+              <StaggerItem key={stat.label} className="text-center">
+                <motion.span
+                  whileHover={{ scale: 1.08, rotate: 2 }}
+                  className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white/10"
                 >
-                  <Icon className="h-7 w-7 text-[#E5A900]" />
-                </div>
-                <div className="mb-2">
-                  <span
-                    className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tabular-nums"
-                    aria-label={`${stat.value} ${stat.label}`}
-                  >
-                    {displayValue}
-                  </span>
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-1">
-                  {stat.label}
-                </h3>
-                <p className="text-sm text-[#8FA3BF]">
-                  {stat.description}
-                </p>
-              </article>
+                  <Icon className="h-6 w-6 text-[#E5A900]" aria-hidden="true" />
+                </motion.span>
+                <motion.p
+                  key={display}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 font-sans text-3xl font-bold tabular-nums text-white sm:text-4xl"
+                  aria-label={`${stat.value} ${stat.label}`}
+                >
+                  {display}
+                </motion.p>
+                <h3 className="mt-1 font-sans text-sm font-semibold text-white">{stat.label}</h3>
+                <p className="mt-1 font-sans text-xs text-[#8FA3BF]">{stat.description}</p>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </div>
-    </section>
+    </motion.section>
   );
 }

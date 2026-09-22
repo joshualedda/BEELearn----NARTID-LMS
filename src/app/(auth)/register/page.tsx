@@ -263,7 +263,7 @@ export default function RegisterPage() {
                   }
                 />
 
-                <Button type="submit" disabled={isLoading}>
+                <Button type="submit" disabled={isLoading} className="w-full">
                   {isLoading ? "Creating Account..." : "Create Account"}
                 </Button>
               </form>

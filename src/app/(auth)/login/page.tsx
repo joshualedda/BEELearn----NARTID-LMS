@@ -149,7 +149,7 @@ export default function LoginPage() {
                   label="Remember this device"
                 />
 
-                <Button type="submit">Sign In</Button>
+                <Button type="submit" className="w-full">Sign In</Button>
               </form>
             </CardContent>
           </Card>
