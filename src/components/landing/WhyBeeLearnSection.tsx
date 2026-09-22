@@ -40,11 +40,7 @@ export function WhyBeeLearnSection() {
     <section id="about" className="bg-[#F7F9FB] py-16 sm:py-20 lg:py-24" aria-labelledby="why-beelearn-heading">
       <div className="mx-auto max-w-7xl px-6">
         <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-white px-3 py-1 font-sans text-xs font-semibold text-green-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500" aria-hidden="true" />
-            Why BeeLearn
-          </span>
-          <h2 id="why-beelearn-heading" className="mt-4 font-sans text-2xl font-bold tracking-tight text-[#0D2B52] sm:text-3xl lg:text-4xl">
+          <h2 id="why-beelearn-heading" className="font-sans text-2xl font-bold tracking-tight text-[#0D2B52] sm:text-3xl">
             Learn. Practice. Grow.
           </h2>
           <p className="mt-3 font-sans text-[15px] leading-6 text-[#6B82A6]">

@@ -1,10 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 
-// Re-trigger on every scroll (viewport once:false, amount 0.15)
-// Respects prefers-reduced-motion via motion's built-in support
+// Reveal each section once to avoid replaying animations while scrolling.
 
 export function FadeIn({
   children,
@@ -19,12 +18,14 @@ export function FadeIn({
   duration?: number;
   className?: string;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ opacity: 0, y }}
+      initial={{ opacity: 0, y: reduceMotion ? 0 : y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: false, amount: 0.18 }}
-      transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, amount: 0.18 }}
+      transition={{ duration: reduceMotion ? 0.01 : duration, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -41,12 +42,14 @@ export function FadeInUp({
   delay?: number;
   className?: string;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: reduceMotion ? 0 : 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: false, amount: 0.2 }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: reduceMotion ? 0.01 : 0.6, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -63,14 +66,16 @@ export function StaggerContainer({
   className?: string;
   stagger?: number;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
       initial="hidden"
       whileInView="show"
-      viewport={{ once: false, amount: 0.15 }}
+      viewport={{ once: true, amount: 0.15 }}
       variants={{
         hidden: {},
-        show: { transition: { staggerChildren: stagger, delayChildren: 0.06 } },
+        show: { transition: { staggerChildren: reduceMotion ? 0 : stagger, delayChildren: reduceMotion ? 0 : 0.06 } },
       }}
       className={className}
     >
@@ -88,13 +93,15 @@ export function StaggerItem({
   className?: string;
   y?: number;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
       variants={{
-        hidden: { opacity: 0, y },
-        show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+        hidden: { opacity: 0, y: reduceMotion ? 0 : y },
+        show: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0.01 : 0.5, ease: [0.22, 1, 0.36, 1] } },
       }}
-      viewport={{ once: false }}
+      viewport={{ once: true }}
       className={className}
     >
       {children}
@@ -111,12 +118,14 @@ export function ScaleIn({
   delay?: number;
   className?: string;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.96 }}
+      initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.96 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: false, amount: 0.2 }}
-      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: reduceMotion ? 0.01 : 0.5, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}

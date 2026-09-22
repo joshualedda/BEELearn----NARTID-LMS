@@ -85,7 +85,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-2">
+    <div className="grid min-h-[100dvh] w-full lg:grid-cols-2">
       <div className="relative hidden flex-col justify-between overflow-hidden bg-[#0D2B52] p-11 text-white lg:flex">
         <div
           aria-hidden
@@ -130,21 +130,21 @@ export default function RegisterPage() {
         </p>
       </div>
 
-      <div className="flex items-center justify-center bg-[#F7F9FB] px-6 py-12 sm:px-10">
+      <div className="flex items-center justify-center bg-[#F7F9FB] px-6 py-6 sm:px-10 sm:py-8">
         <div className="w-full max-w-[410px]">
-          <div className="mb-8 space-y-1.5 text-center">
+          <div className="mb-5 space-y-1 text-center">
             <h1 className="text-[24px] font-bold text-[#0D2B52]">Create Account</h1>
             <p className="text-sm text-slate-500">
               Join the BeeLearn community today
             </p>
-            <p className="pt-3 text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400">
+            <p className="pt-2 text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400">
               DMMMSU - NARTDI Official Portal
             </p>
           </div>
 
-          <Card className="rounded-[14px] p-[30px]">
+          <Card className="rounded-[14px] p-6">
             <CardContent className="p-0">
-              <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+              <form onSubmit={handleSubmit} className="space-y-3.5" noValidate>
                 {errors.length > 0 && (
                   <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 space-y-1">
                     {errors.map((error, index) => (
@@ -243,6 +243,7 @@ export default function RegisterPage() {
                   name="terms"
                   checked={agreedToTerms}
                   onChange={(event) => setAgreedToTerms(event.target.checked)}
+                  className="items-start leading-5"
                   label={
                     <>
                       I agree to the{" "}
@@ -270,7 +271,7 @@ export default function RegisterPage() {
             </CardContent>
           </Card>
 
-          <p className="mt-6 text-center text-sm text-slate-500">
+          <p className="mt-4 text-center text-sm text-slate-500">
             Already have an account?{" "}
             <Link
               href="/login"

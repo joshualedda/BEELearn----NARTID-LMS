@@ -16,7 +16,7 @@ export function StatisticsSection() {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [hasAnimated, setHasAnimated] = useState(false);
 
-  // re-trigger: animate each time section comes into view via motion onViewportEnter
+  // Start the counter once when its section first enters the viewport.
   const handleViewportEnter = () => {
     setHasAnimated(true);
     setCounts({});
@@ -45,7 +45,7 @@ export function StatisticsSection() {
       className="relative overflow-hidden bg-[#0D2B52] py-16 sm:py-20 lg:py-24"
       aria-labelledby="statistics-heading"
       onViewportEnter={handleViewportEnter}
-      viewport={{ once: false, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -58,11 +58,7 @@ export function StatisticsSection() {
 
       <div className="relative mx-auto max-w-7xl px-6">
         <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 font-sans text-xs font-semibold text-[#E5A900]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#E5A900]" aria-hidden="true" />
-            Platform Statistics
-          </span>
-          <h2 id="statistics-heading" className="mt-4 font-sans text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
+          <h2 id="statistics-heading" className="font-sans text-2xl font-bold tracking-tight text-white sm:text-3xl">
             Growing community of beekeepers
           </h2>
           <p className="mt-3 font-sans text-sm leading-6 text-[#8FA3BF] sm:text-[15px]">Join thousands of learners mastering the art and science of beekeeping.</p>

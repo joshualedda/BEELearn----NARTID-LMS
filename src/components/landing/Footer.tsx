@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BeeIcon } from "@/components/icons/BeeIcon";
 import {
   Globe,
   Bird,
@@ -66,7 +65,7 @@ export function Footer() {
 
   return (
     <footer
-      className="bg-[#0D2B52] text-white"
+      className="border-t-4 border-[#E5A900] bg-[#0D2B52] text-white"
       role="contentinfo"
       aria-labelledby="footer-heading"
     >
@@ -74,34 +73,34 @@ export function Footer() {
         Footer
       </h2>
 
-      <div className="mx-auto max-w-7xl px-6 py-16 lg:py-20">
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12 mb-12">
-          <div className="col-span-2 lg:col-span-2">
+      <div className="mx-auto max-w-7xl px-6 py-12 lg:py-16">
+        <div className="mb-12 grid grid-cols-2 gap-8 lg:grid-cols-12 lg:gap-6">
+          <div className="col-span-2 lg:col-span-3">
             <Link
               href="/"
-              className="flex items-center gap-2.5 text-xl font-bold mb-6"
+              className="mb-5 flex items-center gap-2.5 text-xl font-bold"
               aria-label="BeeLearn Home"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-[#E5A900]">
-                <BeeIcon className="h-6 w-6" aria-hidden="true" />
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-sm font-bold text-green-400 ring-1 ring-white/15">
+                B
               </span>
               <span>
                 <span className="text-white">Bee</span>
-                <span className="text-[#E5A900]">Learn</span>
+                <span className="text-green-400">Learn</span>
               </span>
             </Link>
 
-            <p className="text-[#8FA3BF] mb-6 max-w-xs leading-relaxed">
+            <p className="mb-6 max-w-sm leading-relaxed text-[#C7D5EA]">
               The official Beekeeping Learning Management System of NARTDI.
               Empowering beekeepers with practical knowledge and skills.
             </p>
 
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-[#8FA3BF] hover:bg-white/20 hover:text-white transition-colors"
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-[#C7D5EA] transition-colors hover:bg-white/20 hover:text-white"
                 aria-label="Facebook"
               >
                 <Globe className="h-5 w-5" />
@@ -110,7 +109,7 @@ export function Footer() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-[#8FA3BF] hover:bg-white/20 hover:text-white transition-colors"
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-[#C7D5EA] transition-colors hover:bg-white/20 hover:text-white"
                 aria-label="Twitter"
               >
                 <Bird className="h-5 w-5" />
@@ -119,7 +118,7 @@ export function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-[#8FA3BF] hover:bg-white/20 hover:text-white transition-colors"
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-[#C7D5EA] transition-colors hover:bg-white/20 hover:text-white"
                 aria-label="Instagram"
               >
                 <Camera className="h-5 w-5" />
@@ -128,7 +127,7 @@ export function Footer() {
                 href="https://youtube.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-[#8FA3BF] hover:bg-white/20 hover:text-white transition-colors"
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-[#C7D5EA] transition-colors hover:bg-white/20 hover:text-white"
                 aria-label="YouTube"
               >
                 <Video className="h-5 w-5" />
@@ -136,14 +135,14 @@ export function Footer() {
             </div>
           </div>
 
-          <nav className="col-span-1" aria-label="Platform">
+          <nav className="col-span-1 lg:col-span-2" aria-label="Platform">
             <h3 className="font-semibold text-white mb-4">Platform</h3>
             <ul className="space-y-3" role="list">
               {footerLinks.platform.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-[#8FA3BF] hover:text-white transition-colors"
+                    className="text-[#8FA3BF] transition-colors hover:text-green-400"
                   >
                     {link.label}
                   </Link>
@@ -152,14 +151,14 @@ export function Footer() {
             </ul>
           </nav>
 
-          <nav className="col-span-1" aria-label="Support">
+          <nav className="col-span-1 lg:col-span-2" aria-label="Support">
             <h3 className="font-semibold text-white mb-4">Support</h3>
             <ul className="space-y-3" role="list">
               {footerLinks.support.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-[#8FA3BF] hover:text-white transition-colors"
+                    className="text-[#8FA3BF] transition-colors hover:text-green-400"
                   >
                     {link.label}
                   </Link>
@@ -168,14 +167,14 @@ export function Footer() {
             </ul>
           </nav>
 
-          <nav className="col-span-1" aria-label="Legal">
+          <nav className="col-span-1 lg:col-span-2" aria-label="Legal">
             <h3 className="font-semibold text-white mb-4">Legal</h3>
             <ul className="space-y-3" role="list">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-[#8FA3BF] hover:text-white transition-colors"
+                    className="text-[#8FA3BF] transition-colors hover:text-green-400"
                   >
                     {link.label}
                   </Link>
@@ -184,9 +183,9 @@ export function Footer() {
             </ul>
           </nav>
 
-          <div className="col-span-2 lg:col-span-1">
-            <h3 className="font-semibold text-white mb-4">Newsletter</h3>
-            <p className="text-[#8FA3BF] text-sm mb-4">
+          <div className="col-span-2 self-start rounded-2xl border border-white/10 bg-white/5 p-5 lg:col-span-3">
+            <h3 className="mb-2 font-semibold text-white">Newsletter</h3>
+            <p className="mb-4 text-sm text-[#C7D5EA]">
               Get beekeeping tips, course updates, and seasonal advice delivered
               to your inbox.
             </p>
@@ -212,7 +211,7 @@ export function Footer() {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-white/5 border-white/10 focus:border-[#E5A900] focus:ring-[#E5A900]/20"
+                    inputClassName="border-white/15 bg-white/10 text-white placeholder:text-[#8FA3BF] focus:border-[#E5A900] focus:ring-[#E5A900]/20 disabled:bg-white/5"
                     aria-describedby={error ? "footer-email-error" : undefined}
                     disabled={submitted}
                   />
@@ -224,7 +223,7 @@ export function Footer() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full bg-[#E5A900] hover:bg-[#F4C430] text-[#0D2B52] font-semibold"
+                  className="w-full rounded-lg bg-[#E5A900] font-semibold text-[#0D2B52] hover:bg-[#F4C430]"
                   disabled={submitted}
                 >
                   <span className="flex items-center gap-2">

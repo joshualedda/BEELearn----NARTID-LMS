@@ -32,7 +32,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-md transition-colors duration-150 cursor-pointer disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none whitespace-nowrap";
+    "inline-flex items-center justify-center gap-2 rounded-md transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out cursor-pointer active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none whitespace-nowrap";
   const sizing = variant === "link" ? "" : SIZE_CLASSES[size];
 
   return (

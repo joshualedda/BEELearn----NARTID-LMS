@@ -1,97 +1,76 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { ArrowRight, BookOpen, CirclePlay, ChartNoAxesCombined } from "lucide-react";
+import { LandingSectionHeader } from "@/components/landing/LandingSectionHeader";
+import { Button } from "@/components/ui/button";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
-import { Target, Play, TrendingUp } from "lucide-react";
 
 const steps = [
   {
     number: "01",
-    icon: Target,
-    title: "Choose a Course",
-    description: "Browse by level and interest — from fundamentals to advanced techniques. Find your perfect path.",
-    bg: "bg-[#0D2B52]/10",
-    iconClass: "text-[#0D2B52]",
+    icon: BookOpen,
+    title: "Choose your path",
+    description: "Browse practical courses by topic and experience level, then start with what fits your goals.",
+    iconClass: "bg-[#0D2B52] text-[#F7C746]",
   },
   {
     number: "02",
-    icon: Play,
-    title: "Learn at Your Own Pace",
-    description: "Watch lessons, read guides, and access resources anytime. Lifetime access fits your schedule.",
-    bg: "bg-[#E5A900]/10",
-    iconClass: "text-[#E5A900]",
+    icon: CirclePlay,
+    title: "Learn at your pace",
+    description: "Use concise lessons, guides, and resources whenever your schedule allows.",
+    iconClass: "bg-[#E5A900] text-[#0D2B52]",
   },
   {
     number: "03",
-    icon: TrendingUp,
-    title: "Track Your Progress",
-    description: "Complete lessons, earn certificates, and apply knowledge to your own hives with confidence.",
-    bg: "bg-green-600/10",
-    iconClass: "text-green-600",
+    icon: ChartNoAxesCombined,
+    title: "Put it into practice",
+    description: "Build skills you can apply to your hive and return whenever you are ready for the next step.",
+    iconClass: "bg-green-600 text-white",
   },
 ];
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="bg-white py-16 sm:py-20 lg:py-24" aria-labelledby="how-it-works-heading">
+    <section id="how-it-works" aria-labelledby="how-it-works-heading" className="bg-[#F7F9FB] py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-6">
-        <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 font-sans text-xs font-semibold text-green-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500" aria-hidden="true" />
-            How It Works
-          </span>
-          <h2 id="how-it-works-heading" className="mt-4 font-sans text-2xl font-bold tracking-tight text-[#0D2B52] sm:text-3xl lg:text-4xl">
-            Start learning in three simple steps
-          </h2>
-          <p className="mt-3 font-sans text-[15px] leading-6 text-[#6B82A6]">BeeLearn makes beekeeping education easy to start.</p>
+        <FadeIn>
+          <LandingSectionHeader
+            align="center"
+            headingId="how-it-works-heading"
+            eyebrow="How BeeLearn works"
+            title="Start learning in three simple steps"
+            description="A focused path from your first lesson to better decisions at the hive."
+          />
         </FadeIn>
 
-        <div className="relative">
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            style={{ originX: 0.5 }}
-            className="pointer-events-none absolute left-0 top-[48px] hidden h-px w-full bg-gradient-to-r from-transparent via-[#E5A900]/25 to-transparent lg:block"
-            aria-hidden="true"
-          />
+        <StaggerContainer className="mt-10 grid gap-5 md:grid-cols-3 md:gap-6">
+          {steps.map((step) => {
+            const Icon = step.icon;
 
-          <StaggerContainer className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:gap-10">
-            {steps.map((step) => {
-              const Icon = step.icon;
-              return (
-                <StaggerItem key={step.number} className="text-center">
-                  <motion.div whileHover={{ y: -4 }} className="mx-auto mb-5 flex flex-col items-center">
-                    <motion.span
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: false }}
-                      transition={{ duration: 0.45 }}
-                      className="font-sans text-3xl font-bold tracking-tight text-[#E5A900]/80"
-                    >
-                      {step.number}
-                    </motion.span>
-                    <motion.span
-                      whileHover={{ scale: 1.1, rotate: 3 }}
-                      className={`mt-3 flex h-14 w-14 items-center justify-center rounded-2xl ${step.bg}`}
-                    >
-                      <Icon className={`h-7 w-7 ${step.iconClass}`} />
-                    </motion.span>
-                  </motion.div>
-                  <h3 className="font-sans text-[15px] font-bold text-[#0D2B52]">{step.title}</h3>
-                  <p className="mx-auto mt-2 max-w-sm font-sans text-sm leading-6 text-[#6B82A6]">{step.description}</p>
-                </StaggerItem>
-              );
-            })}
-          </StaggerContainer>
-        </div>
+            return (
+              <StaggerItem key={step.number}>
+                <article className="group relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_16px_32px_-28px_rgba(13,43,82,0.36)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-[#E5A900]/50 hover:shadow-[0_22px_38px_-26px_rgba(13,43,82,0.38)]">
+                  <span aria-hidden="true" className="absolute right-5 top-5 text-5xl font-bold leading-none tracking-tighter text-[#0D2B52]/[0.06]">
+                    {step.number}
+                  </span>
+                  <span className={`flex h-12 w-12 items-center justify-center rounded-xl shadow-sm transition-transform duration-300 group-hover:scale-110 ${step.iconClass}`}>
+                    <Icon className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <p className="mt-6 text-xs font-semibold uppercase tracking-[0.14em] text-green-700">Step {step.number}</p>
+                  <h3 className="mt-2 font-sans text-xl font-bold tracking-tight text-[#0D2B52]">{step.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{step.description}</p>
+                </article>
+              </StaggerItem>
+            );
+          })}
+        </StaggerContainer>
 
-        <FadeIn delay={0.2} className="mt-12 text-center">
-          <p className="font-sans text-sm text-[#6B82A6]">Ready to begin?</p>
-          <Link href="/register" className="mt-2 inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-green-600 hover:text-green-700">
-            Create your free account <motion.span initial={{ x: 0 }} whileHover={{ x: 4 }} transition={{ type: "spring", stiffness: 400 }}>→</motion.span>
+        <FadeIn delay={0.18} className="mt-10 text-center">
+          <Link href="/register" className="inline-block">
+            <Button size="lg" className="rounded-full bg-[#0D2B52] px-7 shadow-[0_14px_24px_-14px_rgba(13,43,82,0.55)] hover:bg-[#16407A]">
+              Create your free account <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Button>
           </Link>
         </FadeIn>
       </div>

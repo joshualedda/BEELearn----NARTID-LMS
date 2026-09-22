@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { BeeIcon } from "@/components/icons/BeeIcon";
 import { Menu, X, LogIn, UserPlus } from "lucide-react";
 
 const NAV_LINKS = [
@@ -44,38 +43,40 @@ export function Navbar() {
       initial={{ y: -16, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm"
-          : "bg-white/70 backdrop-blur-sm border-b border-transparent"
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
+        isScrolled ? "px-0 pt-0" : "px-3 pt-3 sm:px-6"
       }`}
       role="banner"
     >
       <nav
-        className="mx-auto max-w-7xl px-6"
+        className={`border transition-[padding,border-radius,box-shadow] duration-300 ease-out ${
+          isScrolled
+            ? "mx-auto max-w-6xl rounded-b-2xl border-x border-b border-t-0 border-gray-200 bg-white/95 px-4 shadow-[0_8px_20px_-16px_rgba(13,43,82,0.3)] backdrop-blur sm:px-5"
+            : "mx-auto max-w-6xl rounded-2xl border-[#0D2B52]/10 bg-white/95 px-4 shadow-[0_12px_28px_-22px_rgba(13,43,82,0.35)] backdrop-blur sm:px-5"
+        }`}
         aria-label="Main navigation"
       >
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-2.5 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-[#E5A900] focus:ring-offset-2 rounded-md"
+            className="flex gap-2.5 rounded-lg text-xl font-bold focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
             aria-label="BeeLearn Home"
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0D2B52] text-[#E5A900]">
-              <BeeIcon className="h-5 w-5" aria-hidden="true" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0D2B52] text-sm font-bold text-green-400 ring-1 ring-[#0D2B52]/10">
+              B
             </span>
             <span>
               <span className="text-[#0D2B52]">Bee</span>
-              <span className="text-[#E5A900]">Learn</span>
+              <span className="text-green-600">Learn</span>
             </span>
           </Link>
 
-          <div className="hidden md:flex md:items-center md:gap-8">
+          <div className="hidden md:flex md:items-center md:gap-2">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-[#0D2B52] transition-colors hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-[#E5A900] focus:ring-offset-2 rounded-md px-2 py-1"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-[#0D2B52] transition-colors hover:bg-[#F7F9FB] hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
               >
                 {link.label}
               </Link>
@@ -90,7 +91,7 @@ export function Navbar() {
               </Button>
             </Link>
             <Link href="/register">
-              <Button size="sm" className="text-sm">
+              <Button size="sm" className="rounded-lg px-3.5 text-sm shadow-sm">
                 <UserPlus className="h-4 w-4 mr-1.5" aria-hidden="true" />
                 Get Started
               </Button>
@@ -98,7 +99,7 @@ export function Navbar() {
           </div>
 
           <button
-            className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-[#0D2B52] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#E5A900] focus:ring-offset-2"
+            className="inline-flex items-center justify-center rounded-lg p-2 text-[#0D2B52] hover:bg-[#F7F9FB] focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 md:hidden"
             onClick={() => setIsOpen(!isOpen)}
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
@@ -124,7 +125,7 @@ export function Navbar() {
               role="navigation"
               aria-label="Mobile menu"
             >
-              <div className="pt-4 space-y-2 border-t border-gray-100 pb-6">
+              <div className="space-y-2 border-t border-gray-100 pb-4 pt-3">
                 {NAV_LINKS.map((link, i) => (
                   <motion.div
                     key={link.href}

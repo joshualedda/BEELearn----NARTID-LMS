@@ -14,7 +14,7 @@ export function CTASection() {
         className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#0D2B52] via-[#0B2343] to-[#081a33]"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        viewport={{ once: false }}
+        viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       />
       <div
@@ -60,14 +60,14 @@ export function CTASection() {
         <FadeIn delay={0.2} className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link href="/register" className="w-full sm:w-auto">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <Button size="lg" className="w-full gap-2 bg-[#E5A900] font-sans text-[#0D2B52] hover:bg-[#F4C430] shadow-lg">
+              <Button size="lg" className="w-full rounded-lg bg-[#E5A900] px-7 font-sans text-[#0D2B52] shadow-[0_14px_28px_-14px_rgba(229,169,0,0.85)] hover:bg-[#F4C430] hover:shadow-[0_18px_32px_-14px_rgba(229,169,0,0.95)]">
                 Start Learning <ArrowRight className="h-4 w-4" />
               </Button>
             </motion.div>
           </Link>
           <Link href="#courses" className="w-full sm:w-auto">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <Button variant="outline" size="lg" className="w-full gap-2 border-white/20 bg-transparent font-sans text-white hover:bg-white/10 hover:text-white">
+              <Button variant="outline" size="lg" className="w-full rounded-lg border-white/20 bg-transparent px-7 font-sans text-white hover:bg-white/10 hover:text-white">
                 Explore Courses
               </Button>
             </motion.div>
