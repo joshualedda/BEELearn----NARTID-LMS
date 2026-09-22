@@ -4,19 +4,12 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/ui/motion";
-import { ArrowRight, Sparkles, Check } from "lucide-react";
+import { ArrowRight, BookOpen, Check } from "lucide-react";
 
 export function CTASection() {
   return (
     <section id="cta" className="relative overflow-hidden bg-[#0D2B52] py-16 sm:py-20 lg:py-24" aria-labelledby="cta-heading">
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#0D2B52] via-[#0B2343] to-[#081a33]"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,#0D2B52_0%,#123B6D_58%,#0D2B52_100%)]" />
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
         aria-hidden="true"
@@ -34,30 +27,18 @@ export function CTASection() {
 
       <div className="relative mx-auto max-w-3xl px-6 text-center">
         <FadeIn>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3.5 py-1 font-sans text-xs font-semibold text-[#E5A900] backdrop-blur-sm">
-            <motion.span
-              animate={{ rotate: [0, 14, -8, 0] }}
-              transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 2 }}
-            >
-              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-            </motion.span>{" "}
-            Ready to Begin?
-          </span>
-        </FadeIn>
-
-        <FadeIn delay={0.08}>
-          <h2 id="cta-heading" className="mt-5 font-sans text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
+          <h2 id="cta-heading" className="font-sans text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
             Ready to start your beekeeping journey?
           </h2>
         </FadeIn>
 
-        <FadeIn delay={0.14}>
+        <FadeIn delay={0.08}>
           <p className="mx-auto mt-3 max-w-xl font-sans text-sm leading-6 text-[#C7D5EA] sm:text-[15px]">
             Join 500+ learners building practical beekeeping skills with trusted, field-tested courses.
           </p>
         </FadeIn>
 
-        <FadeIn delay={0.2} className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <FadeIn delay={0.14} className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link href="/register" className="w-full sm:w-auto">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
               <Button size="lg" className="w-full rounded-lg bg-[#E5A900] px-7 font-sans text-[#0D2B52] shadow-[0_14px_28px_-14px_rgba(229,169,0,0.85)] hover:bg-[#F4C430] hover:shadow-[0_18px_32px_-14px_rgba(229,169,0,0.95)]">
@@ -67,14 +48,14 @@ export function CTASection() {
           </Link>
           <Link href="#courses" className="w-full sm:w-auto">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <Button variant="outline" size="lg" className="w-full rounded-lg border-white/20 bg-transparent px-7 font-sans text-white hover:bg-white/10 hover:text-white">
-                Explore Courses
+              <Button variant="outline" size="lg" className="w-full rounded-lg border-white/35 bg-white/5 px-7 font-sans text-white shadow-none hover:border-white/60 hover:bg-white hover:text-[#0D2B52]">
+                <BookOpen className="h-4 w-4" aria-hidden="true" /> Explore Courses
               </Button>
             </motion.div>
           </Link>
         </FadeIn>
 
-        <FadeIn delay={0.28} className="mt-8 flex flex-wrap items-center justify-center gap-5 font-sans text-xs text-[#8FA3BF]">
+        <FadeIn delay={0.22} className="mt-8 flex flex-wrap items-center justify-center gap-5 font-sans text-xs text-[#C7D5EA]">
           <span className="inline-flex items-center gap-1.5">
             <Check className="h-4 w-4 text-green-400" /> Free to start
           </span>

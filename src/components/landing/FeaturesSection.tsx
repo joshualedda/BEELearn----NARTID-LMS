@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+import { LandingSectionHeader } from "@/components/landing/LandingSectionHeader";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import { BookOpen, Play, FileText, TrendingUp } from "lucide-react";
 
@@ -38,49 +38,37 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="bg-[#F7F9FB] py-16 sm:py-20 lg:py-24" aria-labelledby="features-heading">
+    <section id="features" className="relative overflow-hidden bg-[#F7F9FB] py-16 sm:py-20 lg:py-24" aria-labelledby="features-heading">
+      <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-16 h-72 w-72 rounded-full bg-[#E5A900]/10 blur-3xl" />
       <div className="mx-auto max-w-7xl px-6">
-        <FadeIn className="mb-10 grid gap-6 lg:grid-cols-[1fr_340px] lg:items-end">
-          <div>
-            <h2 id="features-heading" className="font-sans text-2xl font-bold tracking-tight text-[#0D2B52] sm:text-3xl">
-              Everything you need to learn beekeeping
-            </h2>
-            <p className="mt-3 max-w-2xl font-sans text-[15px] leading-6 text-slate-500 sm:text-base">
-              A comprehensive platform designed to take you from curious beginner to confident beekeeper.
-            </p>
-          </div>
-          <div className="rounded-2xl bg-[#0D2B52] p-5 text-white shadow-[0_16px_32px_-24px_rgba(13,43,82,0.75)]">
-            <p className="text-sm font-semibold">Built for learning that fits your schedule.</p>
-            <p className="mt-1 text-sm leading-6 text-[#C7D5EA]">Study lessons, revisit resources, and track every step forward.</p>
-          </div>
+        <FadeIn>
+          <LandingSectionHeader
+            align="center"
+            headingId="features-heading"
+            eyebrow="Your learning toolkit"
+            title="Everything you need to learn beekeeping"
+            description="Structured lessons, practical resources, and clear progress—all in one place."
+          />
         </FadeIn>
 
-        <StaggerContainer className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <StaggerContainer className="relative mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <StaggerItem key={feature.title}>
-                <motion.div
-                  whileHover={{ y: -4, scale: 1.01 }}
-                  transition={{ type: "spring", stiffness: 320, damping: 18 }}
-                  className="h-full"
+                <motion.article
+                  whileHover={{ y: -6 }}
+                  transition={{ type: "spring", stiffness: 320, damping: 20 }}
+                  className="group relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_14px_35px_-26px_rgba(13,43,82,0.42)] transition-[border-color,box-shadow] duration-300 hover:border-[#E5A900]/60 hover:shadow-[0_24px_45px_-24px_rgba(13,43,82,0.32)]"
                 >
-                  <Card className="h-full rounded-2xl border-gray-200 shadow-none transition-all duration-300 hover:-translate-y-1 hover:border-[#0D2B52]/20 hover:shadow-[0_16px_32px_-24px_rgba(13,43,82,0.3)]">
-                    <CardContent className="flex h-full flex-col p-6">
-                      <span className="text-xs font-semibold tracking-[0.14em] text-slate-400">0{index + 1}</span>
-                      <motion.div
-                        whileHover={{ scale: 1.08, rotate: 2 }}
-                        transition={{ type: "spring", stiffness: 400 }}
-                        className={`mt-5 inline-flex h-11 w-11 items-center justify-center rounded-xl ${feature.bg}`}
-                        aria-hidden="true"
-                      >
-                        <Icon className={`h-6 w-6 ${feature.iconClass}`} />
-                      </motion.div>
-                      <h3 className="mt-5 font-sans text-base font-bold text-[#0D2B52]">{feature.title}</h3>
-                      <p className="mt-2 font-sans text-sm leading-6 text-slate-500">{feature.description}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                  <span aria-hidden="true" className="absolute right-5 top-4 text-5xl font-bold tracking-tighter text-[#0D2B52]/[0.05]">0{index + 1}</span>
+                  <span className={`relative inline-flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${feature.bg}`} aria-hidden="true">
+                    <Icon className={`h-6 w-6 ${feature.iconClass}`} />
+                  </span>
+                  <h3 className="mt-6 font-sans text-lg font-bold text-[#0D2B52]">{feature.title}</h3>
+                  <p className="mt-2 font-sans text-sm leading-6 text-slate-600">{feature.description}</p>
+                  <span aria-hidden="true" className="absolute inset-x-6 bottom-0 h-0.5 origin-left scale-x-0 bg-[#E5A900] transition-transform duration-300 group-hover:scale-x-100" />
+                </motion.article>
               </StaggerItem>
             );
           })}

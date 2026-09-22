@@ -42,39 +42,31 @@ export function StatisticsSection() {
   return (
     <motion.section
       id="statistics"
-      className="relative overflow-hidden bg-[#0D2B52] py-16 sm:py-20 lg:py-24"
+      className="relative overflow-hidden bg-white py-16 sm:py-20 lg:py-24"
       aria-labelledby="statistics-heading"
       onViewportEnter={handleViewportEnter}
       viewport={{ once: true, amount: 0.3 }}
     >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.06]"
-        aria-hidden="true"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L50 10.4 L50 30.6 L30 41 L10 30.6 L10 10.4 Z' fill='none' stroke='%23E5A900' stroke-width='0.5'/%3E%3C/svg%3E")`,
-          backgroundSize: "60px 60px",
-        }}
-      />
-
       <div className="relative mx-auto max-w-7xl px-6">
         <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
-          <h2 id="statistics-heading" className="font-sans text-2xl font-bold tracking-tight text-white sm:text-3xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-green-700">Learning together</p>
+          <h2 id="statistics-heading" className="mt-3 font-sans text-3xl font-bold tracking-tight text-[#0D2B52] sm:text-4xl">
             Growing community of beekeepers
           </h2>
-          <p className="mt-3 font-sans text-sm leading-6 text-[#8FA3BF] sm:text-[15px]">Join thousands of learners mastering the art and science of beekeeping.</p>
+          <p className="mt-3 font-sans text-sm leading-6 text-slate-600 sm:text-[15px]">Learn alongside a growing community building practical, field-ready skills.</p>
         </FadeIn>
 
-        <StaggerContainer className="grid grid-cols-2 gap-6 lg:grid-cols-4 lg:gap-8">
+        <StaggerContainer className="grid grid-cols-2 overflow-hidden rounded-3xl border border-slate-200 bg-[#0D2B52] shadow-[0_26px_60px_-34px_rgba(13,43,82,0.65)] lg:grid-cols-4">
           {stats.map((stat) => {
             const Icon = stat.icon;
             const animated = counts[stat.label];
             const isPlus = stat.value.includes("+");
             const display = hasAnimated && animated !== undefined && isPlus ? `${animated}+` : stat.value;
             return (
-              <StaggerItem key={stat.label} className="text-center">
+              <StaggerItem key={stat.label} className="border-white/10 p-6 text-center even:border-l lg:border-l lg:first:border-l-0 lg:p-8">
                 <motion.span
                   whileHover={{ scale: 1.08, rotate: 2 }}
-                  className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white/10"
+                  className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/10 transition-colors hover:bg-white/15"
                 >
                   <Icon className="h-6 w-6 text-[#E5A900]" aria-hidden="true" />
                 </motion.span>
@@ -88,7 +80,7 @@ export function StatisticsSection() {
                   {display}
                 </motion.p>
                 <h3 className="mt-1 font-sans text-sm font-semibold text-white">{stat.label}</h3>
-                <p className="mt-1 font-sans text-xs text-[#8FA3BF]">{stat.description}</p>
+                <p className="mt-1 font-sans text-xs text-[#AFC0D8]">{stat.description}</p>
               </StaggerItem>
             );
           })}
