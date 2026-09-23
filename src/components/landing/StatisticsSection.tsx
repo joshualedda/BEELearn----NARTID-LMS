@@ -42,47 +42,53 @@ export function StatisticsSection() {
   return (
     <motion.section
       id="statistics"
-      className="bg-[#F7F9FB] py-14 sm:py-16 lg:py-20"
+      className="relative overflow-hidden bg-[#0D2B52] py-16 sm:py-20 lg:py-24"
       aria-labelledby="statistics-heading"
       onViewportEnter={handleViewportEnter}
       viewport={{ once: true, amount: 0.3 }}
     >
-      <div className="mx-auto max-w-7xl px-6">
-        <FadeIn className="mx-auto mb-8 max-w-2xl text-center sm:mb-10">
-          <h2 id="statistics-heading" className="font-sans text-2xl font-bold tracking-tight text-[#0D2B52] sm:text-3xl">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        aria-hidden="true"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L50 10.4 L50 30.6 L30 41 L10 30.6 L10 10.4 Z' fill='none' stroke='%23E5A900' stroke-width='0.5'/%3E%3C/svg%3E")`,
+          backgroundSize: "60px 60px",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-7xl px-6">
+        <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
+          <h2 id="statistics-heading" className="font-sans text-2xl font-bold tracking-tight text-white sm:text-3xl">
             Growing community of beekeepers
           </h2>
-          <p className="mt-3 font-sans text-sm leading-6 text-[#6B82A6] sm:text-[15px]">Join thousands of learners mastering the art and science of beekeeping.</p>
+          <p className="mt-3 font-sans text-sm leading-6 text-[#8FA3BF] sm:text-[15px]">Join thousands of learners mastering the art and science of beekeeping.</p>
         </FadeIn>
 
-        <StaggerContainer className="grid grid-cols-2 gap-4 md:gap-5 lg:grid-cols-4">
+        <StaggerContainer className="grid grid-cols-2 gap-6 lg:grid-cols-4 lg:gap-8">
           {stats.map((stat) => {
             const Icon = stat.icon;
             const animated = counts[stat.label];
             const isPlus = stat.value.includes("+");
             const display = hasAnimated && animated !== undefined && isPlus ? `${animated}+` : stat.value;
             return (
-              <StaggerItem key={stat.label} className="h-full">
-                <motion.article
-                  whileHover={{ y: -3 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="flex h-full flex-col items-center rounded-2xl border border-gray-100 bg-white p-5 text-center shadow-[0_12px_32px_-24px_rgba(13,43,82,0.22)] transition-shadow hover:shadow-[0_16px_32px_-22px_rgba(13,43,82,0.3)] sm:p-6"
+              <StaggerItem key={stat.label} className="text-center">
+                <motion.span
+                  whileHover={{ scale: 1.08, rotate: 2 }}
+                  className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white/10"
                 >
-                  <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${stat.iconBackground}`}>
-                    <Icon className={`h-5 w-5 ${stat.iconColor}`} aria-hidden="true" />
-                  </span>
-                  <motion.p
-                    key={display}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 font-sans text-3xl font-bold tabular-nums text-[#0D2B52] sm:text-4xl"
-                    aria-label={`${stat.value} ${stat.label}`}
-                  >
-                    {display}
-                  </motion.p>
-                  <h3 className="mt-1 font-sans text-sm font-semibold text-[#0D2B52]">{stat.label}</h3>
-                  <p className="mt-1 font-sans text-xs leading-5 text-[#6B82A6]">{stat.description}</p>
-                </motion.article>
+                  <Icon className="h-6 w-6 text-[#E5A900]" aria-hidden="true" />
+                </motion.span>
+                <motion.p
+                  key={display}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 font-sans text-3xl font-bold tabular-nums text-white sm:text-4xl"
+                  aria-label={`${stat.value} ${stat.label}`}
+                >
+                  {display}
+                </motion.p>
+                <h3 className="mt-1 font-sans text-sm font-semibold text-white">{stat.label}</h3>
+                <p className="mt-1 font-sans text-xs text-[#8FA3BF]">{stat.description}</p>
               </StaggerItem>
             );
           })}

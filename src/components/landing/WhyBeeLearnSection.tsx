@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+import { LandingSectionHeader } from "@/components/landing/LandingSectionHeader";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import { Globe, Zap, Clock, Leaf, Shield, Award } from "lucide-react";
 
@@ -39,34 +39,33 @@ export function WhyBeeLearnSection() {
   return (
     <section id="about" className="bg-[#F7F9FB] py-16 sm:py-20 lg:py-24" aria-labelledby="why-beelearn-heading">
       <div className="mx-auto max-w-7xl px-6">
-        <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
-          <h2 id="why-beelearn-heading" className="font-sans text-2xl font-bold tracking-tight text-[#0D2B52] sm:text-3xl">
-            Learn. Practice. Grow.
-          </h2>
-          <p className="mt-3 font-sans text-[15px] leading-6 text-[#6B82A6]">
-            BeeLearn brings structured learning materials together in one trusted platform for beekeepers at every level.
-          </p>
+        <FadeIn>
+          <LandingSectionHeader
+            align="center"
+            headingId="why-beelearn-heading"
+            eyebrow="Why BeeLearn"
+            title="Learn. Practice. Grow."
+            description="Trusted guidance that moves with you—from the first lesson to the next season at the hive."
+          />
         </FadeIn>
 
-        <StaggerContainer className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        <StaggerContainer className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
           {benefits.map((benefit) => {
             const Icon = benefit.icon;
             return (
               <StaggerItem key={benefit.title}>
-                <motion.div whileHover={{ y: -3 }} transition={{ type: "spring", stiffness: 300 }}>
-                  <Card className="h-full border-gray-100 transition-all duration-300 hover:border-[#E5A900]/30 hover:shadow-[0_12px_32px_-16px_rgba(13,43,82,0.15)]">
-                    <CardContent className="p-6">
-                      <motion.div
-                        whileHover={{ scale: 1.08 }}
-                        className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${benefit.bg}`}
-                      >
-                        <Icon className={`h-6 w-6 ${benefit.iconClass}`} />
-                      </motion.div>
-                      <h3 className="mt-4 font-sans text-[15px] font-bold text-[#0D2B52]">{benefit.title}</h3>
-                      <p className="mt-2 font-sans text-sm leading-6 text-[#6B82A6]">{benefit.description}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                <motion.article
+                  whileHover={{ y: -6 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="group relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-7 shadow-[0_14px_34px_-26px_rgba(13,43,82,0.45)] transition-[border-color,box-shadow] duration-300 hover:border-[#E5A900]/55 hover:shadow-[0_24px_44px_-24px_rgba(13,43,82,0.32)]"
+                >
+                  <span className={`inline-flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3 ${benefit.bg}`} aria-hidden="true">
+                    <Icon className={`h-6 w-6 ${benefit.iconClass}`} />
+                  </span>
+                  <h3 className="mt-5 font-sans text-lg font-bold text-[#0D2B52]">{benefit.title}</h3>
+                  <p className="mt-2 font-sans text-sm leading-6 text-slate-600">{benefit.description}</p>
+                  <span aria-hidden="true" className="absolute -bottom-12 -right-12 h-28 w-28 rounded-full bg-[#E5A900]/0 transition-colors duration-300 group-hover:bg-[#E5A900]/10" />
+                </motion.article>
               </StaggerItem>
             );
           })}
