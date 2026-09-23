@@ -21,16 +21,13 @@ export function HeroSection() {
 
       <div className="relative mx-auto max-w-5xl px-6 py-20 text-center sm:py-24 lg:py-28">
         <FadeIn className="mx-auto max-w-3xl">
-          <p className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-green-700">
-            Practical beekeeping education
-          </p>
           <motion.h1
             id="hero-heading"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-6 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-[#0D2B52] sm:text-5xl lg:text-6xl"
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="font-sans text-4xl font-bold leading-[1.05] tracking-tight text-[#0D2B52] sm:text-5xl lg:text-6xl"
           >
             Grow your confidence. <span className="text-green-700">Care for every hive.</span>
           </motion.h1>
