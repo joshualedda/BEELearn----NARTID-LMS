@@ -3,7 +3,7 @@ import { updateSession } from "@/lib/supabase/proxy";
 import { canAccessPath, getRoleHome, isProtectedPath, isKnownRole } from "@/utils/permissions";
 
 export async function proxy(request: NextRequest) {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
     return NextResponse.next();
   }
 
