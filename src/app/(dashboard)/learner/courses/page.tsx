@@ -1,3 +1,7 @@
-export default function LearnerCoursesPage() {
-  return <h1 className="text-2xl font-bold">Courses</h1>;
+import { requireAuth } from "@/lib/auth";
+import CoursesPage from "@/app/courses/page";
+
+export default async function LearnerCoursesPage() {
+  await requireAuth("learner");
+  return <CoursesPage />;
 }

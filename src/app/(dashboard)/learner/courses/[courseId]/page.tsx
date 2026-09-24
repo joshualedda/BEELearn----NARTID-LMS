@@ -1,9 +1,12 @@
+import { CourseDetails } from "@/components/features/courses/CourseDetails";
+import { requireAuth } from "@/lib/auth";
+
 export default async function LearnerCourseViewerPage({
   params,
 }: {
   params: Promise<{ courseId: string }>;
 }) {
   const { courseId } = await params;
-
-  return <h1 className="text-2xl font-bold">Course: {courseId}</h1>;
+  await requireAuth("learner");
+  return <CourseDetails courseId={courseId} />;
 }

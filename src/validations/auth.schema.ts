@@ -12,8 +12,8 @@ export function validateLoginInput(input: LoginInput): string[] {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
     errors.push("Email is invalid.");
   }
-  if (input.password.length < 8) {
-    errors.push("Password must be at least 8 characters.");
+  if (!input.password) {
+    errors.push("Password is required.");
   }
   return errors;
 }

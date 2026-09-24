@@ -48,7 +48,7 @@ The browser, server, and session-refresh clients all use these two variables. Ke
 
 ### Verify the connection
 
-- Open `/register` and confirm the form renders without Supabase configuration errors. Registration already calls Supabase; the login form is not implemented yet.
+- Open `/register` and `/login` and confirm both forms render without Supabase configuration errors. See [Supabase integration setup](docs/supabase-integration.md) for email confirmation, database policies, enrollment constraints, and verification steps.
 - Without signing in, visit `/learner/dashboard`, `/instructor/dashboard`, and `/admin/dashboard`. Each should redirect to `/login` with a `next` query parameter.
 - For a read-only API check, load `.env.local` using `loadEnvConfig(process.cwd())` from `@next/env` in a local Node script. Send GET requests to `/auth/v1/settings` and `/rest/v1/<table>?select=*&limit=0` on the Supabase URL, with the publishable key in the `apikey` header. Check `profiles`, `courses`, `enrollments`, `attendance_logs`, `assignments`, and `submissions`. Log only statuses, not credentials or response data.
 - HTTP 200 confirms endpoint connectivity. Zero-row anonymous queries do not verify authenticated row-level permissions or registration/profile creation. Do not disable RLS to make a check pass.

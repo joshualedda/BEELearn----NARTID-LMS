@@ -19,6 +19,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { createClient } from "@/lib/supabase/client";
 import { validateRegisterInput } from "@/validations/auth.schema";
+import { authErrorMessage } from "@/utils/auth-errors";
 
 const FEATURES = [
   { icon: Building2, label: "Structured Beekeeping Courses" },
@@ -36,14 +37,15 @@ export default function RegisterPage() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isLoading) return;
     setErrors([]);
 
     const formData = new FormData(event.currentTarget);
     const input = {
-      fullName: formData.get("fullName") as string,
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-      confirmPassword: formData.get("confirmPassword") as string,
+      fullName: String(formData.get("fullName") ?? "").trim(),
+      email: String(formData.get("email") ?? "").trim(),
+      password: String(formData.get("password") ?? ""),
+      confirmPassword: String(formData.get("confirmPassword") ?? ""),
     };
 
     const validationErrors = validateRegisterInput(input);
@@ -61,10 +63,11 @@ export default function RegisterPage() {
 
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: input.email,
         password: input.password,
         options: {
+          emailRedirectTo: `${window.location.origin}/auth/confirm`,
           data: {
             full_name: input.fullName.trim(),
           },
@@ -72,11 +75,12 @@ export default function RegisterPage() {
       });
 
       if (error) {
-        setErrors([error.message]);
+        setErrors([authErrorMessage(error, "We couldn't create your account. Please try again.")]);
         return;
       }
 
-      router.push("/login?registered=true");
+      if (data.session) { router.replace("/auth/complete"); router.refresh(); }
+      else router.push("/login?registered=true");
     } catch {
       setErrors(["An unexpected error occurred. Please try again."]);
     } finally {
@@ -146,7 +150,7 @@ export default function RegisterPage() {
             <CardContent className="p-0">
               <form onSubmit={handleSubmit} className="space-y-3.5" noValidate>
                 {errors.length > 0 && (
-                  <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 space-y-1">
+                  <div role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-600 space-y-1">
                     {errors.map((error, index) => (
                       <p key={index}>{error}</p>
                     ))}
