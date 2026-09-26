@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Building2,
   Eye,
@@ -18,7 +17,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { validateLoginInput } from "@/validations/auth.schema";
 import { authErrorMessage } from "@/utils/auth-errors";
-import { getSignInDestination } from "@/app/(auth)/actions";
 
 const FEATURES = [
   { icon: Building2, label: "Structured Beekeeping Courses" },
@@ -27,7 +25,6 @@ const FEATURES = [
 ] as const;
 
 export function LoginForm({ message, next }: { message?: string; next?: string }) {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
@@ -49,13 +46,19 @@ export function LoginForm({ message, next }: { message?: string; next?: string }
       const { error } = await supabase.auth.signInWithPassword(input);
       if (error) {
         setErrors([authErrorMessage(error, "We couldn't sign you in. Please try again.")]);
+        setPending(false);
         return;
       }
-      const result = await getSignInDestination(next ?? null);
-      if (result.error) setErrors([result.error]);
-      else if (result.url) { router.replace(result.url); router.refresh(); }
-    } catch { setErrors(["Unable to connect. Please try again."]); }
-    finally { setPending(false); }
+    } catch {
+      setErrors(["Unable to connect. Please try again."]);
+      setPending(false);
+      return;
+    }
+
+    // Start a fresh server request with the new session cookies. A Server Action
+    // posted to /login would be intercepted by the authenticated-user redirect.
+    const query = next ? `?${new URLSearchParams({ next })}` : "";
+    window.location.replace(`/auth/complete${query}`);
   }
 
   async function resendConfirmation() {

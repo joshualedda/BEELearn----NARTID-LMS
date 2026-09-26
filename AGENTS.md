@@ -18,7 +18,7 @@ Before making changes:
 - TypeScript
 - Tailwind CSS
 - Supabase
-- PostgreSQL
+- PostgreSQLs
 
 ## Next.js Rules
 

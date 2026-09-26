@@ -18,14 +18,14 @@ Supabase can deliberately mask duplicate-email signups. The UI reports explicit 
 
 The configured project's REST API confirmed the documented columns on `profiles`, `courses`, and `enrollments`; `courses.status` does not exist. The public key cannot inspect SQL policies, triggers, constraints, or apply migrations. The TypeScript database definitions cover the verified columns used here and are not a full generated schema.
 
-Before production, inspect the existing signup trigger and policies in Supabase, then review and apply `supabase/migrations/202609250001_auth_courses_enrollment.sql` once through the SQL editor or the project's migration workflow. This is a transactional migration and is not executed by the application.
+Before production, inspect the existing signup trigger and policies in Supabase, then review and apply `supabase/migrations/202609250001_secure_core_lms.sql` once through the SQL editor or the project's migration workflow. This transactional migration replaces the two unapplied development migrations and is not executed by the application.
 
 The migration:
 
 - Preserves the signup trigger, which must create `profiles(id, full_name, role)` with default `student`. Verify it does not accept a role from signup metadata.
-- Enforces one enrollment per user/course; it aborts on existing duplicates without deleting records.
-- Enables RLS, allows own-profile and own-enrollment reads, prevents client role changes, and permits students to insert only their own active enrollments.
-- Adds restrictive guards that can narrow existing policies. Staff profile/enrollment management is not supported by this initial policy set; review impact before applying to an environment with existing staff workflows. Future staff policies must update these guards as well.
+- Enforces one enrollment per user/course and one submission per student/assignment; it aborts on existing duplicates without deleting records.
+- Enables RLS and narrow grants on LMS tables. Students read their own records, course owners read their students' records, and admins read all LMS activity. Only admins may change another user's role.
+- Creates the Step 5 quiz table and trusted attendance/quiz functions. Browsers cannot write their own duration or score directly.
 - Makes all existing course catalog rows publicly readable. If any courses must remain private, do not apply the catalog policy until publication rules are defined. No protected lesson content is queried by these pages.
 
 Check existing foreign keys (`profiles.id` → `auth.users.id`, `courses.instructor_id` → `profiles.id`, `enrollments.user_id` → `profiles.id`, `enrollments.course_id` → `courses.id`), NOT NULL constraints, and UUID/default timestamp generation before rollout. No tables or columns are renamed or dropped.

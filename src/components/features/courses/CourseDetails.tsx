@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getCourse } from "@/lib/courses";
 import { getAuth } from "@/lib/auth";
 import { EnrollButton } from "@/components/features/enrollments/EnrollButton";
+import { CourseLearning } from "@/components/features/courses/CourseLearning";
 
 export async function CourseDetails({ courseId }: { courseId: string }) {
   const { course, error } = await getCourse(courseId);
@@ -15,9 +16,11 @@ export async function CourseDetails({ courseId }: { courseId: string }) {
     status = data?.status ?? null;
     unavailable = !!enrollmentError;
   }
-  return <article className="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-10">
+  return <><article className="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-10">
     <h1 className="text-3xl font-bold text-[#0D2B52]">{course.title}</h1>
     <p className="my-8 whitespace-pre-wrap leading-7 text-slate-600">{course.description || "More information about this course will be available soon."}</p>
     <EnrollButton key={`${course.id}:${status}:${user?.id}`} courseId={course.id} initialStatus={status} signedIn={!!user} canEnroll={role === "learner"} unavailable={unavailable} />
-  </article>;
+  </article>
+    {user && role === "learner" && status === "active" && !unavailable && <CourseLearning courseId={course.id} userId={user.id} />}
+  </>;
 }

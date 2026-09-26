@@ -9,6 +9,10 @@ html {
   scroll-behavior: smooth;
 }
 
+#main-content section[id] {
+  scroll-margin-top: 80px;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

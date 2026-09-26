@@ -9,7 +9,7 @@ export function FadeIn({
   children,
   delay = 0,
   y = 14,
-  duration = 0.55,
+  duration = 0.25,
   className = "",
 }: {
   children: ReactNode;
@@ -22,10 +22,10 @@ export function FadeIn({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: reduceMotion ? 0 : y }}
+      initial={reduceMotion ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: reduceMotion ? 0.01 : duration, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, amount: 0, margin: "0px 0px 80px 0px" }}
+      transition={{ duration: reduceMotion ? 0 : duration, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -46,10 +46,10 @@ export function FadeInUp({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: reduceMotion ? 0 : 16 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: reduceMotion ? 0.01 : 0.6, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, amount: 0, margin: "0px 0px 80px 0px" }}
+      transition={{ duration: reduceMotion ? 0 : 0.25, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -60,7 +60,7 @@ export function FadeInUp({
 export function StaggerContainer({
   children,
   className = "",
-  stagger = 0.08,
+  stagger = 0.04,
 }: {
   children: ReactNode;
   className?: string;
@@ -70,12 +70,12 @@ export function StaggerContainer({
 
   return (
     <motion.div
-      initial="hidden"
+      initial={reduceMotion ? false : "hidden"}
       whileInView="show"
-      viewport={{ once: true, amount: 0.15 }}
+      viewport={{ once: true, amount: 0, margin: "0px 0px 80px 0px" }}
       variants={{
         hidden: {},
-        show: { transition: { staggerChildren: reduceMotion ? 0 : stagger, delayChildren: reduceMotion ? 0 : 0.06 } },
+        show: { transition: { staggerChildren: reduceMotion ? 0 : stagger, delayChildren: 0 } },
       }}
       className={className}
     >
@@ -99,7 +99,7 @@ export function StaggerItem({
     <motion.div
       variants={{
         hidden: { opacity: 0, y: reduceMotion ? 0 : y },
-        show: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0.01 : 0.5, ease: [0.22, 1, 0.36, 1] } },
+        show: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.25, ease: [0.22, 1, 0.36, 1] } },
       }}
       viewport={{ once: true }}
       className={className}
@@ -122,10 +122,10 @@ export function ScaleIn({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.96 }}
+      initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: reduceMotion ? 0.01 : 0.5, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, amount: 0, margin: "0px 0px 80px 0px" }}
+      transition={{ duration: reduceMotion ? 0 : 0.25, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}

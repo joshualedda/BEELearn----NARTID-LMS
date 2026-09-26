@@ -45,3 +45,15 @@ test("missing configuration fails closed on protected routes", async () => {
   assert.equal((await run("/admin/dashboard")).status, 503);
   assert.equal((await run("/")).status, 200);
 });
+
+test("authenticated login redirects while the completion route reaches its server-side checks", async () => {
+  process.env.NEXT_PUBLIC_SUPABASE_URL = "https://test.invalid";
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "test-key";
+  const run = setup({ user: { id: "student" }, profileRole: "student" });
+  const login = await run("/login");
+  assert.equal(new URL(login.headers.get("location")).pathname, "/learner/dashboard");
+  const completion = await run("/auth/complete?next=%2Flearner%2Fcourses");
+  assert.equal(completion.status, 200);
+  assert.equal(completion.headers.get("location"), null);
+  assert.equal(completion.cookies.get("test-refreshed-session").value, "test-value");
+});

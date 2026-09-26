@@ -10,7 +10,7 @@ export function loadTs(path, mocks = {}) {
   const filename = resolve(path);
   const source = readFileSync(filename, "utf8");
   const { outputText } = ts.transpileModule(source, {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX },
   });
   const loaded = { exports: {} };
   const nativeRequire = createRequire(filename);

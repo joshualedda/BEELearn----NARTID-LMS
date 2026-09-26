@@ -1,55 +1,146 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, type MouseEvent } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X, LogIn, UserPlus } from "lucide-react";
 
 const NAV_LINKS = [
-  { href: "/#features", label: "Features" },
-  { href: "/#courses", label: "Courses" },
-  { href: "/#about", label: "About" },
-  { href: "/#resources", label: "Resources" },
+  { href: "#features", label: "Features" },
+  { href: "#courses", label: "Courses" },
+  { href: "#about", label: "About" },
+  { href: "#how-it-works", label: "How It Works" },
 ];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const menuToggle = useRef<HTMLButtonElement>(null);
+  const restoreOverflow = useRef<(() => void) | null>(null);
+  const cancelScroll = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const unlock = () => {
+      document.body.style.overflow = previousOverflow;
+    };
+    restoreOverflow.current = unlock;
+    document.body.style.overflow = "hidden";
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const handleResize = () => {
+      if (desktop.matches) {
+        unlock();
+        setIsOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        unlock();
+        setIsOpen(false);
+        menuToggle.current?.focus();
+      }
+    };
+    desktop.addEventListener("change", handleResize);
+    document.addEventListener("keydown", handleKeyDown);
+    handleResize();
     return () => {
-      document.body.style.overflow = "";
+      unlock();
+      restoreOverflow.current = null;
+      desktop.removeEventListener("change", handleResize);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
 
-  const closeMenu = () => setIsOpen(false);
+  useEffect(() => () => cancelScroll.current?.(), []);
+
+  const closeMenu = () => {
+    restoreOverflow.current?.();
+    setIsOpen(false);
+  };
+
+  const navigateToSection = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const hash = event.currentTarget.hash;
+    const target = document.getElementById(hash.slice(1));
+    if (!target) return;
+    event.preventDefault();
+    cancelScroll.current?.();
+    closeMenu();
+
+    if (window.location.hash !== hash) window.history.pushState(null, "", hash);
+    const heading = target.querySelector<HTMLElement>("h2") ?? target;
+    const previousTabIndex = heading.getAttribute("tabindex");
+    heading.setAttribute("tabindex", "-1");
+    heading.focus({ preventScroll: true });
+    if (previousTabIndex === null) heading.removeAttribute("tabindex");
+    else heading.setAttribute("tabindex", previousTabIndex);
+
+    const start = window.scrollY;
+    const offset = Number.parseFloat(getComputedStyle(target).scrollMarginTop) || 80;
+    const destination = Math.max(0, Math.min(
+      target.getBoundingClientRect().top + start - offset,
+      document.documentElement.scrollHeight - window.innerHeight,
+    ));
+    if (reduceMotion) {
+      window.scrollTo({ top: destination, behavior: "instant" });
+      return;
+    }
+
+    let frame = 0;
+    const startedAt = performance.now();
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("wheel", stop);
+      window.removeEventListener("touchstart", stop);
+      window.removeEventListener("pointerdown", stop);
+      window.removeEventListener("keydown", handleScrollKey);
+      window.removeEventListener("popstate", stop);
+      cancelScroll.current = null;
+    };
+    const handleScrollKey = (keyEvent: KeyboardEvent) => {
+      if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " ", "Escape", "Tab"].includes(keyEvent.key)) stop();
+    };
+    const step = (now: number) => {
+      const progress = Math.min((now - startedAt) / 300, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      // Explicit instant steps avoid competing with CSS smooth scrolling.
+      window.scrollTo({ top: start + (destination - start) * eased, behavior: "instant" });
+      if (progress < 1) frame = requestAnimationFrame(step);
+      else stop();
+    };
+    cancelScroll.current = stop;
+    window.addEventListener("wheel", stop, { passive: true });
+    window.addEventListener("touchstart", stop, { passive: true });
+    window.addEventListener("pointerdown", stop, { passive: true });
+    window.addEventListener("keydown", handleScrollKey);
+    window.addEventListener("popstate", stop);
+    frame = requestAnimationFrame(step);
+  };
 
   return (
     <motion.header
-      initial={{ y: -16, opacity: 0 }}
+      initial={reduceMotion ? false : { y: -8, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
+      transition={{ duration: reduceMotion ? 0 : 0.18, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed left-0 right-0 top-0 z-50 transition-[padding] duration-180 motion-reduce:transition-none ${
         isScrolled ? "px-0 pt-0" : "px-3 pt-3 sm:px-6"
       }`}
       role="banner"
     >
       <nav
-        className={`border transition-[padding,border-radius,box-shadow] duration-300 ease-out ${
+        className={`border transition-[padding,border-radius,box-shadow] duration-180 ease-out motion-reduce:transition-none ${
           isScrolled
             ? "mx-auto max-w-6xl rounded-b-2xl border-x border-b border-t-0 border-gray-200 bg-white/95 px-4 shadow-[0_8px_20px_-16px_rgba(13,43,82,0.3)] backdrop-blur sm:px-5"
             : "mx-auto max-w-6xl rounded-2xl border-[#0D2B52]/10 bg-white/95 px-4 shadow-[0_12px_28px_-22px_rgba(13,43,82,0.35)] backdrop-blur sm:px-5"
@@ -73,13 +164,14 @@ export function Navbar() {
 
           <div className="hidden md:flex md:items-center md:gap-2">
             {NAV_LINKS.map((link) => (
-              <Link
+              <a
                 key={link.href}
                 href={link.href}
+                onClick={navigateToSection}
                 className="rounded-lg px-3 py-2 text-sm font-medium text-[#0D2B52] transition-colors hover:bg-[#F7F9FB] hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
           </div>
 
@@ -99,8 +191,9 @@ export function Navbar() {
           </div>
 
           <button
+            ref={menuToggle}
             className="inline-flex items-center justify-center rounded-lg p-2 text-[#0D2B52] hover:bg-[#F7F9FB] focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 md:hidden"
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => isOpen ? closeMenu() : setIsOpen(true)}
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
             aria-label={isOpen ? "Close menu" : "Open menu"}
@@ -117,30 +210,24 @@ export function Navbar() {
           {isOpen && (
             <motion.div
               id="mobile-menu"
-              initial={{ opacity: 0, height: 0 }}
+              initial={reduceMotion ? false : { opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: reduceMotion ? 0 : 0.18, ease: [0.22, 1, 0.36, 1] }}
               className="md:hidden overflow-hidden"
               role="navigation"
               aria-label="Mobile menu"
             >
               <div className="space-y-2 border-t border-gray-100 pb-4 pt-3">
-                {NAV_LINKS.map((link, i) => (
-                  <motion.div
-                    key={link.href}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                  >
-                    <Link
+                {NAV_LINKS.map((link) => (
+                    <a
+                      key={link.href}
                       href={link.href}
                       className="block px-3 py-2.5 text-base font-medium text-[#0D2B52] rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#E5A900]"
-                      onClick={closeMenu}
+                      onClick={navigateToSection}
                     >
                       {link.label}
-                    </Link>
-                  </motion.div>
+                    </a>
                 ))}
                 <div className="pt-4 border-t border-gray-100 space-y-3">
                   <Link
