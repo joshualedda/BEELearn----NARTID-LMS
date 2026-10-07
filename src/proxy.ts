@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/proxy";
-import { canAccessPath, getLoginDestination, getRoleHome, isProtectedPath, normalizeRole } from "@/utils/permissions";
+import { canAccessPath, getLoginDestination, getRoleHome, isProtectedPath, resolveProfileRole } from "@/utils/permissions";
 
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
@@ -23,8 +23,9 @@ export async function proxy(request: NextRequest) {
   if (!user && protectedPath) return redirectTo(`/login?next=${encodeURIComponent(pathname + search)}`);
   if (user && (protectedPath || authForm)) {
     const { data, error } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
-    const role = error ? null : normalizeRole(data?.role);
-    if (!role) return redirectTo("/auth/access-error");
+    if (error) console.error("Profile role lookup failed in proxy:", { code: error.code, message: error.message });
+    const { role, issue } = resolveProfileRole(data, error);
+    if (!role) return redirectTo(`/auth/access-error?reason=${issue}`);
     if (protectedPath && !canAccessPath(role, pathname)) return redirectTo(getRoleHome(role));
     if (authForm) return redirectTo(getLoginDestination(role, request.nextUrl.searchParams.get("next")));
   }

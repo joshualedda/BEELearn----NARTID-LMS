@@ -1,18 +1,21 @@
-import type { InputHTMLAttributes, ReactNode } from "react";
+import { forwardRef, type InputHTMLAttributes, type ReactNode } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: ReactNode;
   trailing?: ReactNode;
   inputClassName?: string;
+  isFocused?: boolean;
 }
 
-export function Input({
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
   className = "",
   inputClassName = "",
   icon,
   trailing,
+  isFocused = false,
+  autoFocus,
   ...props
-}: InputProps) {
+}: InputProps, ref) {
   const padding = [
     icon ? "pl-9" : "pl-3",
     trailing ? "pr-10" : "pr-3",
@@ -26,7 +29,9 @@ export function Input({
         </span>
       ) : null}
       <input
-        className={`h-10 w-full rounded-md border border-gray-200 bg-white text-sm text-[#0D2B52] placeholder:text-gray-400 focus:border-[#0D2B52] focus:outline-none focus:ring-2 focus:ring-[#0D2B52]/10 disabled:cursor-not-allowed disabled:bg-gray-50 ${padding} ${inputClassName}`}
+        ref={ref}
+        autoFocus={isFocused || autoFocus}
+        className={`h-10 w-full rounded-md border border-gray-300 bg-white text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 disabled:cursor-not-allowed disabled:bg-gray-50 ${padding} ${inputClassName}`}
         {...props}
       />
       {trailing ? (
@@ -36,4 +41,4 @@ export function Input({
       ) : null}
     </div>
   );
-}
+});

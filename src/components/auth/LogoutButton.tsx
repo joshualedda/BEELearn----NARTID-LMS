@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { signOut } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 
-export function LogoutButton({ label = "Sign out", className = "", icon }: {
+export function LogoutButton({ label = "Sign out", className = "", icon, variant = "outline" }: {
   label?: string;
   className?: string;
   icon?: React.ReactNode;
+  variant?: "outline" | "ghost";
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -24,7 +25,7 @@ export function LogoutButton({ label = "Sign out", className = "", icon }: {
     finally { setPending(false); }
   }
   return <div>
-    <Button variant="outline" className={className} onClick={logout} disabled={pending}>
+    <Button variant={variant} className={className} onClick={logout} disabled={pending}>
       {icon}{pending ? "Signing out…" : label}
     </Button>
     {error && <p role="alert" className="mt-2 text-sm text-red-700">{error}</p>}

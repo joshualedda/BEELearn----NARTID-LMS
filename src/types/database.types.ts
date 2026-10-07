@@ -10,9 +10,8 @@ export type Json =
 // Replace with generated project types when schema-management access is available.
 export type ProfileRow = {
   id: string;
-  full_name: string | null;
-  role: string;
-  created_at: string;
+  role: string | null;
+  created_at: string | null;
 };
 
 export type CourseRow = {

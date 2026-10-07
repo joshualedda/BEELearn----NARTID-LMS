@@ -1,5 +1,5 @@
 -- Run once in the Supabase SQL Editor. This replaces the two unapplied
--- beelearn migrations and preserves the existing auth.users signup trigger.
+-- beelearn migrations and preserves the auth.users signup trigger.
 -- Run the preflight checks before enabling RLS; a failure rolls everything back.
 begin;
 
@@ -106,7 +106,7 @@ returns boolean language sql stable security definer set search_path = '' as $$
 $$;
 create or replace function private.beelearn_active_student(p_course_id uuid)
 returns boolean language sql stable security definer set search_path = '' as $$
-  select private.beelearn_role() = 'student' and exists (
+  select private.beelearn_role() = 'learner' and exists (
     select 1 from public.enrollments e where e.course_id = p_course_id
       and e.user_id = (select auth.uid()) and e.status = 'active'
   );
@@ -117,7 +117,7 @@ returns boolean language sql stable security definer set search_path = '' as $$
     select 1 from public.profiles p
     join public.enrollments e on e.user_id = p.id
     join public.courses c on c.id = e.course_id
-    where p.id = p_student_id and p.role::text = 'student'
+    where p.id = p_student_id and p.role::text = 'learner'
       and e.status = 'active' and c.instructor_id = (select auth.uid())
   );
 $$;
@@ -141,7 +141,7 @@ returns trigger language plpgsql security definer set search_path = '' as $$
 begin
   if new.id is distinct from old.id then raise exception 'Profile ID cannot change.'; end if;
   if new.role is distinct from old.role then
-    if new.role::text not in ('student','instructor','admin') then raise exception 'Invalid profile role.'; end if;
+    if new.role::text not in ('learner','instructor','admin') then raise exception 'Invalid profile role.'; end if;
     if old.role::text = 'admin' and new.role::text <> 'admin' and
       (select count(*) from public.profiles where role::text = 'admin') <= 1 then
       raise exception 'The final admin account cannot be demoted.';
@@ -190,8 +190,8 @@ revoke all on table public.profiles, public.courses, public.enrollments,
   public.attendance_logs, public.assignments, public.submissions,
   public.quiz_results, public.quizzes from public, anon, authenticated;
 grant select on public.profiles to authenticated;
-grant insert (id, full_name, role) on public.profiles to authenticated;
-grant update (full_name, role) on public.profiles to authenticated;
+grant insert (id) on public.profiles to authenticated;
+grant update (role) on public.profiles to authenticated;
 grant select on public.courses to anon, authenticated;
 grant insert (title, description, instructor_id) on public.courses to authenticated;
 grant update (title, description) on public.courses to authenticated;
@@ -219,12 +219,12 @@ alter table public.submissions enable row level security;
 alter table public.quiz_results enable row level security;
 alter table public.quizzes enable row level security;
 
--- Profiles: own row, every row for admins, or active students in an
--- instructor's courses. Signup may insert only the caller's student profile.
+-- Profiles: own row, every row for admins, or active learners in an
+-- instructor's courses. The auth.users trigger creates new profiles.
 create policy beelearn_profile_read on public.profiles for select to authenticated
   using (id = (select auth.uid()) or (select private.beelearn_admin()) or private.beelearn_teaches_student(id));
 create policy beelearn_profile_insert on public.profiles for insert to authenticated
-  with check (id = (select auth.uid()) and role::text = 'student');
+  with check (id = (select auth.uid()));
 -- Admins may manage other profiles; the trigger guards role changes.
 create policy beelearn_profile_update on public.profiles for update to authenticated
   using (id = (select auth.uid()) or (select private.beelearn_admin()))
@@ -247,7 +247,7 @@ create policy beelearn_enrollment_read on public.enrollments for select to authe
   using (user_id = (select auth.uid()) or private.beelearn_owner(course_id) or (select private.beelearn_admin()));
 create policy beelearn_enrollment_insert on public.enrollments for insert to authenticated
   with check (user_id = (select auth.uid()) and status = 'active'
-    and (select private.beelearn_role()) = 'student'
+    and (select private.beelearn_role()) = 'learner'
     and exists (select 1 from public.courses c where c.id = course_id));
 
 -- Attendance: students see their own rows; owners and admins can read course

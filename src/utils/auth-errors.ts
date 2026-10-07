@@ -5,8 +5,8 @@ export function authErrorMessage(error: { code?: string }, fallback: string): st
     case "user_already_exists":
     case "email_exists": return "This email is already registered. Please sign in.";
     case "weak_password": return "Please choose a stronger password with at least 8 characters.";
-    case "over_email_send_rate_limit":
-    case "over_request_rate_limit": return "Too many attempts. Please wait a few minutes and try again.";
+    case "over_email_send_rate_limit": return "Email sending is temporarily limited. If you already registered, wait for the limit to reset, then use Resend confirmation email on the Sign In page. Do not register again.";
+    case "over_request_rate_limit": return "Too many requests. Please wait before trying again.";
     default: return fallback;
   }
 }

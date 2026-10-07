@@ -28,7 +28,7 @@ export default async function InstructorCourseEditorPage({
     ? await supabase.from("submissions").select("id,assignment_id,user_id,content,submitted_at,is_late,score")
       .in("assignment_id", assignmentIds).order("submitted_at", { ascending: false })
     : { data: [], error: null };
-  return <main className="mx-auto max-w-4xl space-y-8">
+  return <main className="space-y-8">
     <Link className="underline" href="/instructor/courses">← My courses</Link>
     <h1 className="text-3xl font-bold text-[#0D2B52]">{course.title}</h1>
     <AssignmentForm courseId={courseId} />

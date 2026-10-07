@@ -4,4 +4,5 @@ export type SidebarItem = {
   label: string;
   icon: LucideIcon;
   href?: string;
+  section?: string;
 };

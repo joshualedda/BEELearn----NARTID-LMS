@@ -12,7 +12,7 @@ function isPublicQuestion(value: unknown): value is QuizQuestion {
       "id" in option && typeof option.id === "string" && "text" in option && typeof option.text === "string");
 }
 
-export async function CourseLearning({ courseId, userId }: { courseId: string; userId: string }) {
+export async function CourseLearning({ courseId, userId, fullWidth = false }: { courseId: string; userId: string; fullWidth?: boolean }) {
   const supabase = await createClient();
   const [assignmentsResult, quizzesResult, resultsResult] = await Promise.all([
     supabase.from("assignments").select("id,title,due_date").eq("course_id", courseId).order("due_date"),
@@ -32,7 +32,7 @@ export async function CourseLearning({ courseId, userId }: { courseId: string; u
   const latestScores = new Map<string, number>();
   for (const result of resultsResult.data ?? []) if (!latestScores.has(result.quiz_id)) latestScores.set(result.quiz_id, result.score);
 
-  return <section className="mx-auto mt-8 max-w-3xl space-y-8">
+  return <section className={`${fullWidth ? "w-full" : "mx-auto max-w-3xl"} mt-8 space-y-8`}>
     <AttendanceTracker courseId={courseId} />
     <div>
       <h2 className="mb-4 text-2xl font-semibold">Assignments</h2>

@@ -7,7 +7,7 @@ interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
 export function Label({ className = "", ...props }: LabelProps) {
   return (
     <label
-      className={`text-sm font-semibold text-[#0D2B52] ${className}`}
+      className={`block text-sm font-medium text-gray-700 ${className}`}
       {...props}
     />
   );

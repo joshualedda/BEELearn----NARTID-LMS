@@ -13,7 +13,7 @@ export function Checkbox({ className = "", label, id, ...props }: CheckboxProps)
       <input
         id={id}
         type="checkbox"
-        className="h-3.5 w-3.5 cursor-pointer accent-[#0B2343]"
+        className="h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 shadow-sm accent-indigo-600 focus:ring-2 focus:ring-indigo-500"
         {...props}
       />
       {label}

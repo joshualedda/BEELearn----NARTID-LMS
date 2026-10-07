@@ -249,7 +249,10 @@ Green may be used for:
 
 Maintain consistency with existing usage.
 
-Do not make green a competing primary brand color.
+Do not make green a competing primary brand color across the application.
+The shared dashboard navigation shell is a deliberate exception: it uses
+emerald for active links and account accents while retaining BeeLearn
+branding.
 
 For semantic success states, use the project's established green styling.
 
@@ -494,7 +497,7 @@ Use strong brand colors selectively.
 
 ## Role-Based Visual Consistency
 
-Student, instructor, and admin interfaces belong to the same LMS.
+Learner, instructor, and admin interfaces belong to the same LMS.
 
 Do not create completely different design systems for each role.
 
@@ -624,10 +627,36 @@ Navy is appropriate for:
 
 depending on the existing application architecture.
 
-Use gold and green accents sparingly.
+The shared dashboard shell uses emerald navigation accents; elsewhere use
+gold and green accents sparingly.
 
 Active navigation should be clearly distinguishable without relying solely
 on color.
+
+### Shared Dashboard Shell
+
+For learner, instructor, and admin sidebars and navbars, use
+`src/components/dashboard/DashboardShell.tsx` as the implementation reference.
+`sidebarNavbar.jsx` is a visual reference only; do not copy its Laravel/Inertia
+routing, notification requests, user model, or role IDs into the Next.js LMS.
+
+The shared shell uses a white sidebar and header, a light slate content
+background, compact navigation, and emerald active/hover accents. The
+sidebar keeps a text-only BeeLearn heading and role indicator at the top,
+without the graphic logo. Keep each role's existing routes and labels and the
+signed-in account display. The sidebar's gradient account card is a focused
+accent, not a pattern to repeat across every page.
+
+Keep unavailable destinations visibly disabled rather than linking to
+nonexistent pages. The shared navbar account dropdown shows the authenticated
+name, email, role, and sign-out action. Link to a profile only where that page
+exists; otherwise show it as unavailable. Do not add notification, clock, or
+sidebar-collapse controls without a real product need and working behavior.
+Preserve the existing accessible mobile drawer and keyboard handling.
+
+The shell styling is shared; role differences belong in navigation options
+and content, not separate visual systems. Keep the learner label as
+"Learner," not the old "Student" role name.
 
 ---
 

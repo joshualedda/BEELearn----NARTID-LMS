@@ -11,7 +11,7 @@ export default async function LearnerDashboardPage() {
     : { data: [], error: null };
   const byId = new Map(courses?.map((course) => [course.id, course]));
 
-  return <section id="my-courses" className="mx-auto max-w-4xl scroll-mt-24">
+  return <section id="my-courses" className="scroll-mt-24">
     <h1 className="mb-6 text-3xl font-bold text-[#0D2B52]">My courses</h1>
     {error || courseError ? <p role="alert">We couldn&apos;t load your courses. Please try again.</p>
       : !enrollments?.length ? <p>You haven&apos;t enrolled in any courses yet. <Link className="underline" href="/courses">Browse courses</Link>.</p>

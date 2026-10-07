@@ -23,8 +23,19 @@ function matchesPath(pathname: string, prefix: string): boolean {
 }
 
 export function normalizeRole(role: unknown): Role | null {
-  if (role === "student") return ROLES.LEARNER;
   return isKnownRole(role) ? role : null;
+}
+
+export type ProfileAccessIssue = "missing-profile" | "profile-permission" | "profile-query" | "invalid-role";
+
+export function resolveProfileRole(
+  profile: { role: unknown } | null,
+  error: { code?: string } | null,
+): { role: Role; issue: null } | { role: null; issue: ProfileAccessIssue } {
+  if (error) return { role: null, issue: error.code === "42501" ? "profile-permission" : "profile-query" };
+  if (!profile) return { role: null, issue: "missing-profile" };
+  const role = normalizeRole(profile.role);
+  return role ? { role, issue: null } : { role: null, issue: "invalid-role" };
 }
 
 export function isKnownRole(role: unknown): role is Role {

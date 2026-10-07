@@ -1,6 +1,16 @@
 # Core LMS rollout and analytics fields
 
-Run `supabase/migrations/202609250001_secure_core_lms.sql` once in the Supabase
+The admin sidebar has separate Instructors and Students destinations at
+`/admin/instructors` and `/admin/students`. Both pages currently show searchable,
+filterable sample account tables with pagination; their records, course counts,
+and statuses are design previews rather than live data. "Students" refers to
+profiles with the `learner` role in the application.
+The `/admin/courses` page also uses sample courses, with searchable and
+filterable table and card views. These previews do not query live course data.
+
+First apply `supabase/migrations/202609240001_signup_profile.sql` to connect
+Supabase Auth signups to the existing `public.profiles` table. Then run
+`supabase/migrations/202609250001_secure_core_lms.sql` once in the Supabase
 SQL Editor. It replaces the two unapplied development migrations and includes
 the Step 5 schema, trusted functions, grants, and RLS policies. The app uses
 only the publishable key and cannot apply SQL itself. The transaction stops if

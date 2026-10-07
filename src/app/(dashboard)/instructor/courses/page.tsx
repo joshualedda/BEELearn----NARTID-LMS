@@ -17,7 +17,7 @@ export default async function InstructorCoursesPage() {
     counts.set(enrollment.course_id, (counts.get(enrollment.course_id) ?? 0) + 1);
   }
 
-  return <section className="mx-auto max-w-4xl">
+  return <section>
     <h1 className="mb-6 text-3xl font-bold text-[#0D2B52]">My courses</h1>
     {error ? <p role="alert">We couldn&apos;t load your courses. Please try again.</p>
       : !courses?.length ? <p>You don&apos;t have any courses yet.</p>

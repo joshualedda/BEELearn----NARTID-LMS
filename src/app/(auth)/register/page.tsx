@@ -17,9 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { createClient } from "@/lib/supabase/client";
+import { registerAccount } from "@/app/(auth)/actions";
 import { validateRegisterInput } from "@/validations/auth.schema";
-import { authErrorMessage } from "@/utils/auth-errors";
 
 const FEATURES = [
   { icon: Building2, label: "Structured Beekeeping Courses" },
@@ -62,24 +61,13 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.signUp({
-        email: input.email,
-        password: input.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm`,
-          data: {
-            full_name: input.fullName.trim(),
-          },
-        },
-      });
-
-      if (error) {
-        setErrors([authErrorMessage(error, "We couldn't create your account. Please try again.")]);
+      const result = await registerAccount(input, agreedToTerms);
+      if (result.status === "error") {
+        setErrors([result.message]);
         return;
       }
 
-      if (data.session) { router.replace("/auth/complete"); router.refresh(); }
+      if (result.status === "success") window.location.replace("/auth/complete");
       else router.push("/login?registered=true");
     } catch {
       setErrors(["An unexpected error occurred. Please try again."]);

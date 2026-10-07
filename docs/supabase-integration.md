@@ -6,13 +6,36 @@ Use the existing `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABL
 
 In Supabase Authentication:
 
-1. Keep **Confirm email** enabled (verified enabled during implementation).
-2. Set Site URL to the deployed app origin. Add `http://localhost:3000/auth/confirm` and your deployed `/auth/confirm` URL to the redirect allowlist.
-3. For confirmation links that also work when opened on another device, set the Confirm signup email link to `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`. Use the local Site URL while testing locally. The app also accepts the default PKCE `code` callback, which requires the browser that initiated signup.
+1. **Confirm email** is currently disabled in the Supabase project, so signup returns a session immediately. If you enable confirmation later, add `http://localhost:3000/auth/confirm` and your deployed `/auth/confirm` URL to the redirect allowlist.
+2. If you enable confirmation later and want links to work on another device, set the Confirm signup email link to `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`. The app also accepts the default PKCE `code` callback, which requires the browser that initiated signup.
 
-Successful signup shows a check-your-email notice. Verification creates an SSR cookie session and routes through `/auth/complete`. Login reads `profiles.role`: `student` (and legacy `learner`) maps to `/learner/dashboard`, with instructor/admin using their existing `/…/dashboard` routes. Unknown or missing profiles lead to a recoverable account error, not a guessed role. Never set authorization roles through user metadata.
+With confirmation disabled, the registration Server Action calls Supabase Auth signup and reports success when it returns a session. The existing `auth.users` trigger creates the matching profile; the application does not insert one or send a role. The database default assigns `learner`. If confirmation is enabled later, signup shows a check-your-email notice first. Login reads `profiles.role`: `learner` maps to `/learner/dashboard`, with instructor/admin using their existing dashboard routes. Unknown or missing profiles lead to a recoverable account error. Never set authorization roles through user metadata.
+
+`auth.signUp()` creates the account in Supabase Auth's built-in `auth.users` table. The application does not create or insert into a separate users table. Supabase stores the submitted full name in the Auth user's metadata.
+
+The LMS reads the existing `public.profiles` table for authorization. The Supabase database trigger creates the profile when Auth creates a user, leaving `role` to its database default. Registration never asks for or sends a role. The full name remains in Supabase Auth metadata; the database trigger may also copy it into `profiles.full_name` if configured to do so. The repository's signup-profile migration is for projects without this trigger; do not apply a second trigger to a project where one already exists.
+
+With email confirmation disabled, signup returns a session and goes directly through `/auth/complete`. That page reads the profile role but does not create profiles. An Auth account missing its profile needs a database-side repair by an administrator.
+
+Before applying the migration, inspect the project's existing signup triggers in the SQL Editor:
+
+```sql
+select t.tgname, pg_get_triggerdef(t.oid) as definition
+from pg_trigger t
+where t.tgrelid = 'auth.users'::regclass
+  and not t.tgisinternal
+  and (t.tgtype & 4) = 4;
+```
+
+If another `auth.users` INSERT trigger exists, the migration stops so it cannot create duplicate profile rows. Inspect that trigger before changing it. The publishable key cannot inspect or apply triggers; an HTTP 200 from the Auth endpoint proves reachability, not that registration and profile creation work.
+
+After registering a new test account, use the SQL Editor to verify its Auth and profile rows share an ID and the profile role is `learner`. Confirm that sign-in reaches `/learner/dashboard`. Do not log or share the test account's password.
 
 Supabase can deliberately mask duplicate-email signups. The UI reports explicit duplicate errors when returned, but otherwise shows the same confirmation notice to avoid claiming a new account was definitely created. Resend confirmation is available on login. Sessions persist using the existing SSR cookie client; the nonfunctional “Remember this device” checkbox was replaced with an accurate session explanation.
+
+If registration reports an email rate limit, check for an earlier confirmation email and inspect **Authentication → Logs** and **Authentication → Rate Limits** in the Supabase dashboard. Supabase's built-in email service has a small project-wide quota, shared by signup and other Auth emails. Wait for it to reset or configure custom SMTP or a Send Email hook before repeated testing. Retrying the form immediately does not reset the limit. A request rate limit is separate and may depend on the user's IP address or recent signup attempts.
+
+If the Auth user already exists but the first confirmation link expired, do not register again with the same email. Go to `/login`, enter that email, and use **Resend confirmation email** after the email quota resets. If a newly delivered link fails immediately, inspect Auth logs and the confirmation email template; link scanners can consume single-use confirmation URLs before the user clicks them.
 
 ## Database rollout
 
@@ -22,7 +45,7 @@ Before production, inspect the existing signup trigger and policies in Supabase,
 
 The migration:
 
-- Preserves the signup trigger, which must create `profiles(id, full_name, role)` with default `student`. Verify it does not accept a role from signup metadata.
+- Preserves the existing signup trigger, which creates the profile and uses the database's default `learner` role. Do not add a second signup trigger.
 - Enforces one enrollment per user/course and one submission per student/assignment; it aborts on existing duplicates without deleting records.
 - Enables RLS and narrow grants on LMS tables. Students read their own records, course owners read their students' records, and admins read all LMS activity. Only admins may change another user's role.
 - Creates the Step 5 quiz table and trusted attendance/quiz functions. Browsers cannot write their own duration or score directly.
@@ -44,7 +67,7 @@ Run `npm.cmd run lint`, `npm.cmd run typecheck`, `npm.cmd test`, and `npm.cmd ru
 
 Using dedicated test accounts, verify:
 
-- Signup creates a student profile with the supplied name; verify email and resend/expired-link behavior.
+- Signup creates a profile whose ID matches the Auth user and whose role defaults to `learner`; the supplied name stays in Auth metadata. Verify email and resend/expired-link behavior.
 - Incorrect credentials and unverified emails show errors; each role reaches its own dashboard after login and reload.
 - A student cannot visit admin/instructor routes, alter their profile role through the API, or insert an enrollment for someone else.
 - Logged-out course enrollment returns through login to the same course; external `next` URLs are rejected.

@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
 import { getLoginDestination } from "@/utils/permissions";
 
+export const dynamic = "force-dynamic";
+
 export default async function CompleteAuthPage({ searchParams }: {
   searchParams: Promise<{ next?: string }>;
 }) {

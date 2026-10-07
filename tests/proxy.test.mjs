@@ -27,14 +27,33 @@ test("proxy preserves refreshed cookies when redirecting and preserves the retur
 });
 
 test("proxy ignores elevated user metadata and enforces the profile role", async () => {
-  const response = await setup({ user: { id: "student", user_metadata: { role: "admin" } }, profileRole: "student" })("/admin/dashboard");
+  const response = await setup({ user: { id: "learner-id", user_metadata: { role: "admin" } }, profileRole: "learner" })("/admin/dashboard");
   assert.equal(new URL(response.headers.get("location")).pathname, "/learner/dashboard");
 });
 
-test("missing and failed profile reads produce a recoverable error without a login loop", async () => {
-  for (const error of [null, { code: "42501" }]) {
-    const run = setup({ user: { id: "student" }, error });
-    assert.equal(new URL((await run("/login")).headers.get("location")).pathname, "/auth/access-error");
+test("learner keeps dashboard access after refresh but cannot open staff routes", async () => {
+  const run = setup({ user: { id: "learner-id" }, profileRole: "learner" });
+  assert.equal((await run("/learner/dashboard")).status, 200);
+  for (const path of ["/admin/dashboard", "/instructor/dashboard"]) {
+    assert.equal(new URL((await run(path)).headers.get("location")).pathname, "/learner/dashboard");
+  }
+});
+
+test("instructors and admins retain their own dashboard routes", async () => {
+  for (const role of ["instructor", "admin"]) {
+    const run = setup({ user: { id: `${role}-id` }, profileRole: role });
+    assert.equal((await run(`/${role}/dashboard`)).status, 200);
+    assert.equal(new URL((await run("/learner/dashboard")).headers.get("location")).pathname, `/${role}/dashboard`);
+  }
+});
+
+test("missing and failed profile reads produce a recoverable error without a login loop", async (t) => {
+  t.mock.method(console, "error", () => {});
+  for (const [error, reason] of [[null, "missing-profile"], [{ code: "42501" }, "profile-permission"]]) {
+    const run = setup({ user: { id: "learner-id" }, error });
+    const destination = new URL((await run("/login")).headers.get("location"));
+    assert.equal(destination.pathname, "/auth/access-error");
+    assert.equal(destination.searchParams.get("reason"), reason);
     assert.equal((await run("/auth/access-error")).status, 200);
   }
 });
@@ -49,7 +68,7 @@ test("missing configuration fails closed on protected routes", async () => {
 test("authenticated login redirects while the completion route reaches its server-side checks", async () => {
   process.env.NEXT_PUBLIC_SUPABASE_URL = "https://test.invalid";
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "test-key";
-  const run = setup({ user: { id: "student" }, profileRole: "student" });
+  const run = setup({ user: { id: "learner-id" }, profileRole: "learner" });
   const login = await run("/login");
   assert.equal(new URL(login.headers.get("location")).pathname, "/learner/dashboard");
   const completion = await run("/auth/complete?next=%2Flearner%2Fcourses");

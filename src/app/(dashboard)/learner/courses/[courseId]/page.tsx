@@ -8,5 +8,5 @@ export default async function LearnerCourseViewerPage({
 }) {
   const { courseId } = await params;
   await requireAuth("learner");
-  return <CourseDetails courseId={courseId} />;
+  return <CourseDetails courseId={courseId} fullWidth />;
 }
